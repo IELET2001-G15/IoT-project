@@ -102,7 +102,7 @@ void setup() {
           delay(1000);
       }
 
-    WiFiMulti.addAP("SSID", "passwd"); //Add a WiFi hotspot (addAP = add AccessPoint) (put your own network name and password in here)
+    WiFiMulti.addAP("G6_9463", "UrteneEr100%Torre"); //Add a WiFi hotspot (addAP = add AccessPoint) (put your own network name and password in here)
 
     while(WiFiMulti.run() != WL_CONNECTED) { //Here we wait for a successfull WiFi connection untill we do anything else
       Serial.println("Not connected to wifi...");
@@ -122,7 +122,7 @@ void setup() {
     //Send data to server/webpage
     webSocket.on("dataRequest", dataRequest); //Listens for the command to send data
 
-    webSocket.begin("91.192.221.40", 2520); //This starts the connection to the server with the ip-address/domainname and a port (unencrypted)
+    webSocket.begin("192.168.43.182", 2520); //This starts the connection to the server with the ip-address/domainname and a port (unencrypted)
 }
 
 //Drive the car forwards or backwards (THIS IS JUST AN EXAMPLE AND NOT WHAT YOU HAVE TO USE IT FOR)
