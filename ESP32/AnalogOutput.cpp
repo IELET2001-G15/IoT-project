@@ -1,4 +1,3 @@
-#include "Arduino.h"
 #include "AnalogOutput.h"
 #include "analogWrite.h"
 

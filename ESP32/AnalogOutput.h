@@ -1,7 +1,7 @@
 #ifndef AnalogOutput_h
 #define AnalogOutput_h
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 class AnalogOutput {
     public:
