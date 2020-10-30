@@ -127,7 +127,11 @@ void getSoilHygrometerData(const char* dataRequestData, size_t length) {
 }
 
 /**
- * Wrapper to avoid static error
+ * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
+ * appropriate member function. In this case getting instructions to change the power to the
+ * water pump
+ * @param dataRequestData the message from the server
+ * @param length the size of the message
 */
 void changeWaterPumpPower(const char* powerLevelData, size_t length) {
     log("Water pump - ");
@@ -135,7 +139,11 @@ void changeWaterPumpPower(const char* powerLevelData, size_t length) {
 }
 
 /**
- * Wrapper to avoid static error
+ * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
+ * appropriate member function. In this case getting instructions to change the power to the
+ * light
+ * @param dataRequestData the message from the server
+ * @param length the size of the message
 */
 void changeLightPower(const char* powerLevelData, size_t length) {
     log("Light - ");
@@ -143,14 +151,17 @@ void changeLightPower(const char* powerLevelData, size_t length) {
 }
 
 /**
- * 
+ * Runs when ESP32 connects to server and displays client ID and IP
+ * @param payload the message from containing client ID and IP
+ * @param length the size of the message
 */
 void event(const char* payload, size_t length) { //Default event, what happens when you connect
     Serial.printf("ID, IP: %s\n", payload);
 }
 
 /**
- * 
+ * Handles initial setup, specifically connects to WiFi and server. Also contains all the events
+ * the server can trigger
 */
 void setup() {
     Serial.begin(9600);
@@ -182,10 +193,10 @@ void setup() {
 }
 
 /**
- * 
+ * Keeps the WebSocket connection running. DO NOT USE DELAY HERE, IT WILL INTERFER WITH 
+ * WEBSOCKET OPERATIONS. TO MAKE TIMED EVENTS HERE USE THE millis() FUNCTION OR PUT TIMERS 
+ * ON THE SERVER IN JAVASCRIPT
 */
 void loop() {
-    webSocket.loop(); //Keeps the WebSocket connection running 
-  //DO NOT USE DELAY HERE, IT WILL INTERFER WITH WEBSOCKET OPERATIONS
-  //TO MAKE TIMED EVENTS HERE USE THE millis() FUNCTION OR PUT TIMERS ON THE SERVER IN JAVASCRIPT
+    webSocket.loop(); 
 }
