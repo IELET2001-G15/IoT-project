@@ -31,8 +31,7 @@ void log(T thingToLog, char* description=nullptr) {
  * @return the number
 */
 uint8_t str2int(const char* str) {
-    String string(str);
-    return string.toInt();
+    return atoi(str);
 }
 
 /**
