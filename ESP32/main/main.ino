@@ -12,6 +12,8 @@ const char* IP = "192.168.43.182";
 uint16_t PORT = 2520;
 const bool DEBUG = true;
 
+const byte gpio_25 = 25;
+
 /**
  * Debugging tool
  * @param thingToLog the data of arbitrary data type to display in console
@@ -158,6 +160,19 @@ void event(const char* payload, size_t length) { //Default event, what happens w
     Serial.printf("ID, IP: %s\n", payload);
 }
 
+void changeLEDState(const char * LEDStateData, size_t length) { //What happens when the ESP32 receives a instruction from the server (with variable) to change the LED
+  Serial.printf("LED State: %s\n", LEDStateData); //First we print the data formated with the "printf" command
+  Serial.println(LEDStateData); //Then we just print the LEDStateData which will be a int (0 og 1 so in reeality bool) that tells us what to do with the LED
+
+  //Data conversion //We need som data processing to make this work
+  String dataString(LEDStateData); //First we convert the const char array(*) to a string in Arduino (this makes thing easier)
+  int LEDState = dataString.toInt(); //When we have a string we can use the built in Arduino function to convert to an integer
+
+  Serial.print("This is the LED state in INT: "); //We print the final state
+  Serial.println(LEDState);
+  digitalWrite(gpio_25, LEDState);//We now use the varible to change the light (1 is on, 0 is off)
+}
+
 /**
  * Handles initial setup, specifically connects to WiFi and server. Also contains all the events
  * the server can trigger
@@ -187,8 +202,11 @@ void setup() {
     webSocket.on("getSoilHygrometerData", getSoilHygrometerData);
     webSocket.on("changeLightPower", changeLightPower);
     webSocket.on("changeWaterPumpPower", changeWaterPumpPower);
+    webSocket.on("LEDStateChange", changeLEDState);
 
     webSocket.begin(IP, PORT);
+
+    pinMode(gpio_25, OUTPUT);
 }
 
 /**
