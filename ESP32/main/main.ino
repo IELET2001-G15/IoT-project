@@ -106,7 +106,7 @@ AnalogOutput light(34);
 
 /**
  * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
- * appropriate member function. In this case sending sensor data from water level sensor and
+ * appropriate member function. In this case reading sensor data from water level sensor and
  * sends it to server
  * @param dataRequestData the message from the server
  * @param length the size of the message
@@ -117,7 +117,7 @@ void getWaterLevelData(const char* dataRequestData, size_t length) {
 
 /**
  * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
- * appropriate member function. In this case sending sensor data from w level sensor and
+ * appropriate member function. In this case reading sensor data from soil hygrometer and
  * sends it to server
  * @param dataRequestData the message from the server
  * @param length the size of the message
