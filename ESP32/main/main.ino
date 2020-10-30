@@ -14,6 +14,8 @@ const bool DEBUG = true;
 
 /**
  * Debugging tool
+ * @param thingToLog the data of arbitrary data type to display in console
+ * @param description the optional description of the displayed data
 */
 template<typename T>
 void log(T thingToLog, char* description=nullptr) {
@@ -24,7 +26,9 @@ void log(T thingToLog, char* description=nullptr) {
 }
 
 /**
- * 
+ * Converts number formated in text as C-string to number of type uint8_t
+ * @param str the C-string that is converted
+ * @return the number
 */
 uint8_t str2int(const char* str) {
     String string(str);
@@ -32,7 +36,12 @@ uint8_t str2int(const char* str) {
 }
 
 /**
- * 
+ * Includes all functions and attibutes related to sensors and other input from pins.
+ * Requires some dependencies to work as intended, specifically an instance of SocketIoClient 
+ * called webSocket, and a wrapper function for each sendData() object to work around the problem
+ * of using non-static members in webSocket.on() method
+ * @param pin the pin the input is connected to
+ * @param identifier the ID for the server to recognize each sensor
 */
 class AnalogInput {
     public:
@@ -43,7 +52,11 @@ class AnalogInput {
         }
 
         /**
-         * 
+         * Measures the sensor value and sends sensor data to the server as a number between 0 and 
+         * 4095 as text. Needs a wrapper function for each sendData() object to work around the problem
+         * of using non-static members in webSocket.on() method. This wrapper function have to have the
+         * format: void wrapper(const char* data, size_t length) {instanceName.sendData(data);}
+         * @param dataRequestData the message sent from the server. Can be omitted
         */
         void sendData(const char* dataRequestData) {
             uint8_t request = str2int(dataRequestData);
@@ -51,14 +64,7 @@ class AnalogInput {
             itoa(analogRead(_pin), buffer, 17);
             log(request, "Request: ");
             log(buffer, "ITOA TEST: ");
-            webSocket.emit(_identifier, buffer); // Change id in server script
-        }
-
-        /**
-         * 
-        */
-        char* getID() {
-            return _identifier;
+            webSocket.emit(_identifier, buffer);
         }
 
     private:
@@ -67,8 +73,10 @@ class AnalogInput {
 };
 
 /**
- * Every instance of AnalogOutput needs its own wrapper function to receive data from server, because
- * webSocket.on() only accepts static members.
+ * Includes all functions and attibutes related to output from pins. Requires some dependencies to 
+ * work as intended, specifically the ESP32 analogWrite library, and a wrapper function for each 
+ * power() object to work around the problem of using non-static members in webSocket.on() method
+ * @param pin the pin the output is connected to
 */
 class AnalogOutput {
     public:
@@ -78,7 +86,8 @@ class AnalogOutput {
         }
 
         /**
-         * 
+         * Changes the power to the output to the value specified from server between 0 and 100%
+         * @param powerLevelData the data from the server containing the power in text
         */
         void power(const char* powerLevelData) {
             uint8_t powerLevel = str2int(powerLevelData);
@@ -96,14 +105,22 @@ AnalogOutput waterPump(33);
 AnalogOutput light(34);
 
 /**
- * Wrapper to avoid static error
+ * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
+ * appropriate member function. In this case sending sensor data from water level sensor and
+ * sends it to server
+ * @param dataRequestData the message from the server
+ * @param length the size of the message
 */
 void getWaterLevelData(const char* dataRequestData, size_t length) {
     waterLevelSensor.sendData(dataRequestData);
 }
 
 /**
- * Wrapper to avoid static error
+ * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
+ * appropriate member function. In this case sending sensor data from w level sensor and
+ * sends it to server
+ * @param dataRequestData the message from the server
+ * @param length the size of the message
 */
 void getSoilHygrometerData(const char* dataRequestData, size_t length) {
     soilHygrometer.sendData(dataRequestData);
@@ -129,7 +146,7 @@ void changeLightPower(const char* powerLevelData, size_t length) {
  * 
 */
 void event(const char* payload, size_t length) { //Default event, what happens when you connect
-    Serial.printf("got message: %s\n", payload);
+    Serial.printf("ID, IP: %s\n", payload);
 }
 
 /**
