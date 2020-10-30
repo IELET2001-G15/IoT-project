@@ -108,4 +108,14 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         //This means the webbrowser will receive the data, and can then graph it or similar.
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
+
+    //Change states (general user defined functions)
+    socket.on('changeLEDState', function(state) { //This server function constantly checks if a client (webpage) calls its
+        //If the webpage calles it it will us the "io.emit" (to send to alle clients) and not "client.emit" to only send to one client
+        //In this way, when we send it to call clients, the ESP32 will get the message. It is an easy solution which can be made better
+
+        io.emit('LEDStateChange', state); //This is the actual socket.io emit function
+        console.log('user ' + clientID + ' changed the LED state to: ' + state);
+
+    });
 });
