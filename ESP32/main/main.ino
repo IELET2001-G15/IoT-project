@@ -28,15 +28,6 @@ void log(T thingToLog, char* description=nullptr) {
 }
 
 /**
- * Converts number formated in text as C-string to number of type uint8_t
- * @param str the C-string that is converted
- * @return the number
-*/
-uint8_t str2int(const char* str) {
-    return atoi(str);
-}
-
-/**
  * Includes all functions and attibutes related to sensors and other input from pins.
  * Requires some dependencies to work as intended, specifically an instance of SocketIoClient 
  * called webSocket, and a wrapper function for each sendData() object to work around the problem
@@ -60,7 +51,7 @@ class AnalogInput {
          * @param dataRequestData the message sent from the server. Can be omitted
         */
         void sendData(const char* dataRequestData) {
-            uint8_t request = str2int(dataRequestData);
+            uint8_t request = atoi(dataRequestData);
             char buffer[17];
             itoa(analogRead(_pin), buffer, 17);
             log(request, "Request: ");
@@ -91,7 +82,7 @@ class AnalogOutput {
          * @param powerLevelData the data from the server containing the power in text
         */
         void power(const char* powerLevelData) {
-            uint8_t powerLevel = str2int(powerLevelData);
+            uint8_t powerLevel = atoi(powerLevelData);
             log(powerLevel, "Received power level: ");
             analogWrite(_pin, map(powerLevel, 0, 100, 0, 255));
         }
@@ -193,7 +184,7 @@ void setup() {
     Serial.print("Connecting to WiFi");
     while (WiFiMulti.run() != WL_CONNECTED) { // Wait for a successfull WiFi connection
         Serial.print('.');
-        delay(100);
+        delay(50);
     }
     Serial.print("\nConnected to WiFi successfully!\n");
 

@@ -7,19 +7,24 @@ socket.on('connect',function() { //When you connect to the server (and it works)
     console.log('Client has connected to the server!'); //The client prints this message
 }); //The 'connect' function/identifier is the standard procedure. To make something more we have to make it ourselves
 
-socket.on('clientConnected',function(id, ip) { //This is our selfmade functions. Here we can have the server return arguments (data) that we need
+socket.on('clientConnected', function(id, ip) { //This is our selfmade functions. Here we can have the server return arguments (data) that we need
     console.log('Client recevied ID: ' + id); //In this case the server will tell us what our local ID is (auto assigned)
     console.log("Client IP: " + ip);//And it will tell us what our IP-address
 
 });
 
-socket.on('data', function(data) { //Received data from the server who is forwarding it to us from the ESP32
-
-    console.log('Data was received: ' + data);
+socket.on('graphWaterLevelSensor', function(data) { //Received data from the server who is forwarding it to us from the ESP32
+    console.log('WaterLevelSensor data was received: ' + data);
     console.log(Number(data));
     dataArr1.push(data); //This pushes data to the array that stores all the chart data
     myLineChart.update(); //This updates the chart
+});
 
+socket.on('graphSoilHygrometer', function(data) { //Received data from the server who is forwarding it to us from the ESP32
+    console.log('SoilHygrometer data was received: ' + data);
+    console.log(Number(data));
+    dataArr2.push(data); //This pushes data to the array that stores all the chart data
+    myLineChart.update(); //This updates the chart
 });
 
 //In this function (which is essentially built up the same as a void function in Arduino) we want to send something to the server
@@ -32,24 +37,15 @@ function changeLEDState(state) {
 
 }
 
-function changeDriveState(state) {
-
-    socket.emit('changeDriveState', state); //Same logic as earlier, this calls the change of motor direction
-    console.log("changeDriveState called");
-
-}
-
-function changeTurnState(state) {
-
-    socket.emit('changeTurnState', state);
-    console.log("changeTurnState called");
+function lightPower(power) {
+    socket.emit('lightPower', power);
+    console.log("lightPower called");
 
 }
 
-function changeStopState(state) {
-
-    socket.emit('changeStopState', state);
-    console.log("changeStopState called");
+function waterPumpPower(power) {
+    socket.emit('waterPumpPower', power);
+    console.log("waterPumpPower called");
 
 }
 
@@ -59,11 +55,16 @@ function changeStopState(state) {
 //Since the ESP32 easily can react to such a request it sends the data with no problems, and with no timers in use.
 //This means we dont have to use the delay() function or the millis() function in Arduino, we can just let Node and JavaScript fix the tracking of time for us
 //This is the function that will make the ESP32 transmit data to the server, and not the other way around
-function requestDataFromBoard(interval) {
-    socket.emit('requestDataFromBoard', interval); //Here we tell the server to call the function "requestDataFromBoard" with a argument called "intervall"
+function waterLevelData(interval) {
+    socket.emit('waterLevelData', interval); //Here we tell the server to call the function "requestDataFromBoard" with a argument called "intervall"
     //The intervall value is the period of time between each data transmit from the ESP32 to the server. Typical values can be everything form 100ms to 100s
-    console.log("requestDataFromBoard was called with intervall: " + interval);
+    console.log("waterLevelData was called with intervall: " + interval);
 } //Be careful to not set the interval value to low, you do not want to overflood your server with data/requests
+
+function soilHygrometerData(interval) {
+    socket.emit('soilHygrometerData', interval);
+    console.log("soilHygrometerData was called with intervall: " + interval);
+}
 
 function stopDataFromBoard() { //Tells the server to stop all timers so that data is no longer sent from the ESP32 to the webpage
     socket.emit('stopDataFromBoard'); //Here we tell the server to call the function "stopDataFromBoard"

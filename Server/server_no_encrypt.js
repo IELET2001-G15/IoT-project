@@ -41,14 +41,14 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
     });
 
     //Change states (general user defined functions)
-    socket.on('changeLightPower', function(power) { //This server function constantly checks if a client (webpage) calls its
+    socket.on('lightPower', function(power) { //This server function constantly checks if a client (webpage) calls its
         //If the webpage calles it it will us the "io.emit" (to send to alle clients) and not "client.emit" to only send to one client
         //In this way, when we send it to call clients, the ESP32 will get the message. It is an easy solution which can be made better
         io.emit('changeLightPower', power); //This is the actual socket.io emit function
         console.log('user ' + clientID + ' changed the light power to [%]: ' + power);
     });
 
-    socket.on('changeWaterPumpPower', function(power) { //Same logic as earlier
+    socket.on('waterPumpPower', function(power) { //Same logic as earlier
         io.emit('changeWaterPumpPower', power);
         console.log('user ' + clientID + ' changed the water pump power to [%]: ' + power);
     });
@@ -56,7 +56,7 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
     var timers = []; //Stores all our timers
     //Read data from board section
 
-    socket.on('getWaterLevelData', function(interval) { //This function i earlier described client-side on the webpage.
+    socket.on('waterLevelData', function(interval) { //This function i earlier described client-side on the webpage.
         //When the webpage calls it it will every time-interval send the "dataRequest" function to all connected clients.
         //When a ESP32 receives this command, it will reply with a data of a specific measurement eg. a temperature sensor.
         //This way, the timer is on the server/node.js and not on the ESP32/Arduino
@@ -73,20 +73,16 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         }
     });
 
-    socket.on('getSoilHygrometerData', function(interval) { //This function i earlier described client-side on the webpage.
-        //When the webpage calls it it will every time-interval send the "dataRequest" function to all connected clients.
-        //When a ESP32 receives this command, it will reply with a data of a specific measurement eg. a temperature sensor.
-        //This way, the timer is on the server/node.js and not on the ESP32/Arduino
+    socket.on('soilHygrometerData', function(interval) {
         console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-
-        if(interval > 99) { //if the timeinterval is not more than 100ms it does not allow it to start
-            timers.push( //If an actual argument is given (a time period) it starts the timer and periodically calls the function
-                setInterval(function(){ //If an actual argument is given (a time period) it starts the timer and periodically calls the function
-                    io.emit('getSoilHygrometerData', 0); //Send "dataRequest" command/function to all ESP32's
+        if(interval > 99) {
+            timers.push(
+                setInterval(function(){
+                    io.emit('getSoilHygrometerData', 0);
                 }, interval)
             );
         } else {
-            console.log("o short timeintervall");
+            console.log("too short timeintervall");
         }
     });
 
@@ -98,14 +94,13 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
     });
 
     socket.on('waterLevelSensor', function(data) { //This is function that actually receives the data. The earlier one only starts the function.
-        io.emit('waterLevelSensor', data); //Everytime a "dataFromBoard" tag (with data) is sent to the server, "data" tag with the actual data is sent to all clients
+        io.emit('graphWaterLevelSensor', data); //Everytime a "dataFromBoard" tag (with data) is sent to the server, "data" tag with the actual data is sent to all clients
         //This means the webbrowser will receive the data, and can then graph it or similar.
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
 
-    socket.on('soilHygrometer', function(data) { //This is function that actually receives the data. The earlier one only starts the function.
-        io.emit('soilHygrometer', data); //Everytime a "dataFromBoard" tag (with data) is sent to the server, "data" tag with the actual data is sent to all clients
-        //This means the webbrowser will receive the data, and can then graph it or similar.
+    socket.on('soilHygrometer', function(data) {
+        io.emit('graphSoilHygrometer', data);
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
 
