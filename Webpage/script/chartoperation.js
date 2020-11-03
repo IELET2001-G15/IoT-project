@@ -3,7 +3,7 @@ var ctx = document.getElementById('myChart').getContext('2d'); //Defines the bas
 var myLineChart = new Chart(ctx, { //Defines the graph
     type: 'line', //Defines the type of graph
     data: { //Decides how the data (content of the graph will be)
-        labels: ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '08:00', '09:00'], //Labels define the values of the x-axis (and can be altered at a later point/live)
+        labels: xaxis, //Labels define the values of the x-axis (and can be altered at a later point/live)
         datasets: [ //Datasets refers to the different graphs and the data they contain
             {
                 label: 'Data 1', //Label of dataset/graph 1

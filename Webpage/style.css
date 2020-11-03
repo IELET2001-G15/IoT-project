@@ -59,6 +59,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
 
 /* Controlmodules */
 /* Keyboard */
+
 .key-container {
     width: 40%; /*50% of the width of the screen*/
     height: 40%; /*and 50% of the height of the screen = 1/4 of the screen*/
@@ -103,6 +104,8 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     margin: 0 0.2% 0.2% 0.2%; /*Thi sets up a "keep away" zone around the element*/
 }
 
+
+
 .dragBox {
     cursor: pointer; /*This alters the mouse cursor to a "pointy" type*/
 }
@@ -146,13 +149,29 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     margin: 0 2.5%;
 }
 
-.btn-box {
+.div1-btn-box {
+    width: 33%;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 1.0);
+
+}
+
+#div1-btn-getdata {
+    background-color: #7AD661;
+
+}
+
+.div2-btn-box {
     width: 50%;
     height: 75%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 
 .btn {
     width: 75%;
@@ -166,10 +185,54 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     color: white;
     background-color: #7AD661;
     border-radius: 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+
+
 }
 
-.btn:hover {
-    cursor: pointer;
+#div1-btn-getdata {
+    background-color: #7AD661;
+    color: white;
+    border: 2px solid #7AD661;
+}
+
+#div1-btn-getdata:hover {
+    background-color: white;
+    color: black;
+}
+
+#div1-btn-stopdata {
+    background-color: #E23636;
+    color: white;
+    border: 2px solid #E23636;
+}
+
+#div1-btn-stopdata:hover {
+    background-color: white;
+    color: black;
+}
+
+#div1-btn-stopdata {
+    background-color: #E23636;
+    color: white;
+    border: 2px solid #E23636;
+}
+
+#div1-btn-stopdata:hover {
+    background-color: white;
+    color: black;
+}
+
+#div1-btn-reset {
+    background-color: #008CBA;
+    color: white;
+    border: 2px solid #008CBA;
+}
+
+#div1-btn-reset:hover {
+    background-color: white;
+    color: black;
 }
 
 /* Chart */
