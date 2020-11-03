@@ -159,21 +159,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
 
 }
 
-#div1-btn-getdata {
-    background-color: #7AD661;
-
-}
-
-.div2-btn-box {
-    width: 50%;
-    height: 75%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-.btn {
+.div1-btn {
     width: 75%;
     height: 50%;
     display: flex;
@@ -187,52 +173,139 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     border-radius: 2px;
     transition-duration: 0.4s;
     cursor: pointer;
-
-
 }
 
 #div1-btn-getdata {
-    background-color: #7AD661;
-    color: white;
-    border: 2px solid #7AD661;
+    background-color: #e4f6df;
+    color: black;
+    border: 3px solid #7AD661;
 }
 
 #div1-btn-getdata:hover {
-    background-color: white;
-    color: black;
+    background-color: #7AD661;
+    color: white;
 }
 
 #div1-btn-stopdata {
-    background-color: #E23636;
-    color: white;
-    border: 2px solid #E23636;
+    background-color: #f9d6d6;
+    color: black;
+    border: 3px solid #E23636;
 }
 
 #div1-btn-stopdata:hover {
-    background-color: white;
-    color: black;
-}
-
-#div1-btn-stopdata {
     background-color: #E23636;
     color: white;
-    border: 2px solid #E23636;
-}
-
-#div1-btn-stopdata:hover {
-    background-color: white;
-    color: black;
 }
 
 #div1-btn-reset {
-    background-color: #008CBA;
-    color: white;
-    border: 2px solid #008CBA;
+    background-color: #cce8f1;
+    color: black;
+    border: 3px solid #008CBA;
 }
 
 #div1-btn-reset:hover {
+    background-color: #008CBA;
+    color: white;
+}
+
+.div2-btn-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: white;
+    border-radius: 10px;
+
+}
+
+
+#div2-btn-box-u1 {
+    width: 50%;
+    height: 38%;
+}
+
+#div2-btn-box-u2 {
+    width: 50%;
+    height: 38%;
+}
+
+#div2-btn-box-d1 {
+    width: 100%;
+    height: 38%;
+}
+
+
+.div2-btn {
+    width: 25%;
+    height: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Arial";
+    font-size: 16px;
+    font-weight: 800;
+    color: white;
+    background-color: #7AD661;
+    border-radius: 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+
+#div2-btn-on {
+    background-color: #e4f6df;
     color: black;
+    border: 3px solid #7AD661;
+}
+
+#div2-btn-on:hover {
+    background-color: #7AD661;
+    color: white;
+}
+
+#div2-btn-off {
+    background-color: #f9d6d6;
+    color: black;
+    border: 3px solid #E23636;
+}
+
+#div2-btn-off:hover {
+    background-color: #E23636;
+    color: white;
+}
+
+.slidecontainer {
+    width: 100%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
 }
 
 /* Chart */
