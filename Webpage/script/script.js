@@ -97,6 +97,3 @@ function keyUp(event) { //Same logic as earlier, just that in this case we check
     changeStopState(0); //In all of the cases above, when the keys are let go, the car should stop. Therefore we just call the stop function at the end.
 
 }
-
-var dataArr1 = [5, 10, 20, 50]; /* The chart data for "Data 1", altering this array/list changes the graph data */
-var dataArr2 = [2, 100, 50, 130, 20, 10, 50, 420, 50, 10]; /* The chart data for "Data 2", altering this array/list changes the graph data */
