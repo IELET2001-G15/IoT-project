@@ -1,4 +1,4 @@
- #include <analogWrite.h>
+#include <analogWrite.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <SocketIoClient.h>
@@ -8,11 +8,9 @@ SocketIoClient webSocket;
 
 const char* SSID = "G6_9463";
 const char* PASS = "UrteneEr100%Torre";
-const char* IP = "192.168.43.182";
+const char* IP = "192.168.137.145";
 uint16_t PORT = 2520;
 const bool DEBUG = true;
-
-const byte gpio_25 = 25;
 
 /**
  * Debugging tool
