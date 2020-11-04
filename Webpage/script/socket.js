@@ -16,14 +16,14 @@ socket.on('clientConnected', function(id, ip) { //This is our selfmade functions
 socket.on('graphWaterLevelSensor', function(data) { //Received data from the server who is forwarding it to us from the ESP32
     console.log('WaterLevelSensor data was received: ' + data);
     console.log(Number(data));
-    dataArr1.push(data); //This pushes data to the array that stores all the chart data
+    waterLevelArray.push(data); //This pushes data to the array that stores all the chart data
     myLineChart.update(); //This updates the chart
 });
 
 socket.on('graphSoilHygrometer', function(data) { //Received data from the server who is forwarding it to us from the ESP32
     console.log('SoilHygrometer data was received: ' + data);
     console.log(Number(data));
-    dataArr2.push(data); //This pushes data to the array that stores all the chart data
+    soilHygrometerArray.push(data); //This pushes data to the array that stores all the chart data
     myLineChart.update(); //This updates the chart
 });
 
@@ -58,23 +58,41 @@ function waterPumpPower(power) {
 function waterLevelData(interval) {
     socket.emit('waterLevelData', interval); //Here we tell the server to call the function "requestDataFromBoard" with a argument called "intervall"
     //The intervall value is the period of time between each data transmit from the ESP32 to the server. Typical values can be everything form 100ms to 100s
-    console.log("waterLevelData was called with intervall: " + interval);
+    console.log("waterLevelData was called with interval: " + interval);
 } //Be careful to not set the interval value to low, you do not want to overflood your server with data/requests
 
 function soilHygrometerData(interval) {
     socket.emit('soilHygrometerData', interval);
-    console.log("soilHygrometerData was called with intervall: " + interval);
+    console.log("soilHygrometerData was called with interval: " + interval);
 }
 
 function temperatureData(interval){
     socket.emit('temperatureData', interval);
-    console.log("temperatureData was called with intervall: " + interval);
+    console.log("temperatureData was called with interval: " + interval);
+}
+
+function co2Data(interval){
+    socket.emit('co2Data', interval);
+    console.log("co2Data was called with interval: " + interval);
+}
+
+function pHData(interval){
+    socket.emit('pHData', interval);
+    console.log("pHData was called with interval: " + interval);
+}
+
+function lightData(interval){
+    socket.emit('lightData', interval);
+    console.log("lightData was called with interval: " + interval);
 }
 
 function requestDataFromBoard(interval){
-    waterLevelData(interval);
     soilHygrometerData(interval);
     temperatureData(interval);
+    waterLevelData(interval);
+    lightData(interval);
+    co2Data(interval);
+    pHData(interval);
 }
 
 function stopDataFromBoard() { //Tells the server to stop all timers so that data is no longer sent from the ESP32 to the webpage

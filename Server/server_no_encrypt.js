@@ -48,7 +48,6 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         io.emit('changeWaterPumpPower', power);
         console.log('user ' + clientID + ' changed the water pump power to [%]: ' + power);
     });
-
     var timers = []; //Stores all our timers
     //Read data from board section
 
