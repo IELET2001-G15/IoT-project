@@ -37,18 +37,14 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         for (var i = 0; i < timers.length; i++) {//clear timer if user disconnects
             clearTimeout(timers[i]); //Cleartimer is the same as stopping the timer, in this case we clear all possible timers previously set
         }
-
     });
 
-    //Change states (general user defined functions)
-    socket.on('lightPower', function(power) { //This server function constantly checks if a client (webpage) calls its
-        //If the webpage calles it it will us the "io.emit" (to send to alle clients) and not "client.emit" to only send to one client
-        //In this way, when we send it to call clients, the ESP32 will get the message. It is an easy solution which can be made better
-        io.emit('changeLightPower', power); //This is the actual socket.io emit function
+    socket.on('lightPower', function(power) { // Receives from webpage
+        io.emit('changeLightPower', power);   // Sends to ESP
         console.log('user ' + clientID + ' changed the light power to [%]: ' + power);
     });
 
-    socket.on('waterPumpPower', function(power) { //Same logic as earlier
+    socket.on('waterPumpPower', function(power) {
         io.emit('changeWaterPumpPower', power);
         console.log('user ' + clientID + ' changed the water pump power to [%]: ' + power);
     });
@@ -56,16 +52,12 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
     var timers = []; //Stores all our timers
     //Read data from board section
 
-    socket.on('waterLevelData', function(interval) { //This function i earlier described client-side on the webpage.
-        //When the webpage calls it it will every time-interval send the "dataRequest" function to all connected clients.
-        //When a ESP32 receives this command, it will reply with a data of a specific measurement eg. a temperature sensor.
-        //This way, the timer is on the server/node.js and not on the ESP32/Arduino
+    socket.on('waterLevelData', function(interval) { // Receives from webpage
         console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-
-        if(interval > 99) { //if the timeinterval is not more than 100ms it does not allow it to start
-            timers.push( //If an actual argument is given (a time period) it starts the timer and periodically calls the function
-                setInterval(function(){ //If an actual argument is given (a time period) it starts the timer and periodically calls the function
-                    io.emit('getWaterLevelData', 0); //Send "dataRequest" command/function to all ESP32's
+        if(interval > 99) {
+            timers.push(
+                setInterval(function(){
+                    io.emit('getWaterLevelData', 0); // Sends to ESP
                 }, interval)
             );
         } else {
