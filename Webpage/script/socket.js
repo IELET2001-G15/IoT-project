@@ -66,6 +66,17 @@ function soilHygrometerData(interval) {
     console.log("soilHygrometerData was called with intervall: " + interval);
 }
 
+function temperatureData(interval){
+    socket.emit('temperatureData', interval);
+    console.log("temperatureData was called with intervall: " + interval);
+}
+
+function requestDataFromBoard(interval){
+    waterLevelData(interval);
+    soilHygrometerData(interval);
+    temperatureData(interval);
+}
+
 function stopDataFromBoard() { //Tells the server to stop all timers so that data is no longer sent from the ESP32 to the webpage
     socket.emit('stopDataFromBoard'); //Here we tell the server to call the function "stopDataFromBoard"
     console.log("stopDataFromBoard was called");
