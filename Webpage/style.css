@@ -57,55 +57,6 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
 
 }
 
-/* Controlmodules */
-/* Keyboard */
-
-.key-container {
-    width: 40%; /*50% of the width of the screen*/
-    height: 40%; /*and 50% of the height of the screen = 1/4 of the screen*/
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255, 255, 255, 1.0);
-    border-left: 1px solid rgba(240, 240, 240, 1.0);
-    border-bottom: 2px solid rgba(240, 240, 240, 1.0);
-    flex-flow: wrap;
-}
-
-.key-btn-top {
-    width: 100%;
-    height: 49%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-}
-
-.key-btn-btm {
-    width: 100%;
-    height: 49%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-}
-
-.key-btn { /*The actual key button style*/
-    width: 22.5%;
-    height: 67.5%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2%;
-    border: 3px solid #303030;
-    color: #00509e; /*This sets the color of the text*/
-    background-color: white;
-    font-size: 50px; /*This sets the font size of the text*/
-    font-family: "Arial";
-    font-weight: 900; /*This sets the font properties (bold, italics, etc.)*/
-    margin: 0 0.2% 0.2% 0.2%; /*Thi sets up a "keep away" zone around the element*/
-}
-
-
-
 .dragBox {
     cursor: pointer; /*This alters the mouse cursor to a "pointy" type*/
 }
@@ -114,7 +65,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     cursor: pointer;
 }
 
-/* Button */
+/* Common configurations for all divs */
 .btn-container {
     width: 40%;
     height: 40%;
@@ -149,6 +100,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     margin: 0 2.5%;
 }
 
+/* DIV1 css configurations */
 .div1-btn-box {
     width: 33%;
     height: 70%;
@@ -208,6 +160,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     color: white;
 }
 
+/* DIV2 css configurations */
 .div2-btn-box {
     display: flex;
     align-items: center;
@@ -217,19 +170,18 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
 
 }
 
-
 #div2-btn-box-u1 {
-    width: 50%;
+    width: 45%;
     height: 38%;
 }
 
 #div2-btn-box-u2 {
-    width: 50%;
+    width: 45%;
     height: 38%;
 }
 
 #div2-btn-box-d1 {
-    width: 100%;
+    width: 90%;
     height: 38%;
 }
 
@@ -308,7 +260,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     cursor: pointer;
 }
 
-/* Chart */
+/* DIV3 css configurations */
 .chart-container {
     width: 40%;
     height: 40%;
@@ -318,4 +270,30 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     background-color: rgba(255, 255, 255, 1.0);
     border-left: 1px solid rgba(240, 240, 240, 1.0);
     border-bottom: 2px solid rgba(240, 240, 240, 1.0);
+}
+
+/* DIV4 css configurations */
+.div4-txt-box {
+    display: flex;
+    background-color: white;
+    line-height: 150%;
+
+}
+
+#div4-txt-variable {
+    width: 35%;
+    height: 70%;
+    background-color: rgba(255, 255, 200, 1.0);
+}
+
+#div4-txt-data {
+    width: 10%;
+    height: 70%;
+    background-color: rgba(255, 255, 150, 1.0);
+}
+
+#div4-txt-info {
+    width: 45%;
+    height: 70%;
+    background-color: rgba(255, 255, 100, 1.0);
 }
