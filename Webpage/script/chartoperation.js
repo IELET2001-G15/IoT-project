@@ -7,7 +7,7 @@ var myLineChart = new Chart(ctx, { //Defines the graph
         datasets: [ //Datasets refers to the different graphs and the data they contain
             {
                 label: 'Data 1', //Label of dataset/graph 1
-                data: dataArr1, //The dataArray that actually stores the data
+                data: waterLevelArray, //The dataArray that actually stores the data
                 backgroundColor: [ //The background color of the graph (usually not in use)
                     'rgba(255, 99, 132, 0.2)'
                 ],
@@ -19,7 +19,7 @@ var myLineChart = new Chart(ctx, { //Defines the graph
             },
             {
                 label: 'Data 2',
-                data: dataArr2,
+                data: soilHygrometerArray,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)'
                 ],
