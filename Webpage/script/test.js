@@ -1,4 +1,3 @@
-
 // Graph live data
 var waterLevelArray = [60, 10, 20, 50]; /* The chart data for "Data 1", altering this array/list changes the graph data */
 var waterPumpPowerArray = [60, 10, 20, 50]; /* The chart data for "Data 1", altering this array/list changes the graph data */
@@ -15,12 +14,12 @@ var xaxis = ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:
 function printDataValues(){
     var printstr = ""
     for (var i in allData){
-        printstr += i[i.length-1];
+        console.log(lastValue);
+        var lastValue = allData[i].length-1;
+        printstr += allData[i][lastValue]
         printstr += "<br>"
     }
-
     document.getElementById("dataValues").innerHTML = printstr;
 }
 
 
-printDataValues();

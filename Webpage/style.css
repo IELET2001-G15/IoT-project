@@ -290,6 +290,8 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     width: 10%;
     height: 70%;
     background-color: rgba(255, 255, 150, 1.0);
+    align-items: center;
+    justify-content: center;
 }
 
 #div4-txt-info {

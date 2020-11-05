@@ -93,6 +93,8 @@ function requestDataFromBoard(interval){
     lightData(interval);
     co2Data(interval);
     pHData(interval);
+    printDataValues();
+
 }
 
 function stopDataFromBoard() { //Tells the server to stop all timers so that data is no longer sent from the ESP32 to the webpage
