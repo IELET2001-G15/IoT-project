@@ -10,20 +10,12 @@ socket.on('connect',function() { //When you connect to the server (and it works)
 socket.on('clientConnected', function(id, ip) { //This is our selfmade functions. Here we can have the server return arguments (data) that we need
     console.log('Client recevied ID: ' + id); //In this case the server will tell us what our local ID is (auto assigned)
     console.log("Client IP: " + ip);//And it will tell us what our IP-address
-
 });
 
 socket.on('graphWaterLevelSensor', function(data) { //Received data from the server who is forwarding it to us from the ESP32
     console.log('WaterLevelSensor data was received: ' + data);
     console.log(Number(data));
     waterLevelArray.push(data); //This pushes data to the array that stores all the chart data
-    myLineChart.update(); //This updates the chart
-});
-
-socket.on('graphSoilHygrometer', function(data) { //Received data from the server who is forwarding it to us from the ESP32
-    console.log('SoilHygrometer data was received: ' + data);
-    console.log(Number(data));
-    soilHygrometerArray.push(data); //This pushes data to the array that stores all the chart data
     myLineChart.update(); //This updates the chart
 });
 
@@ -34,19 +26,16 @@ function changeLEDState(state) {
     //This function controls wether a LED-light is on or of
     socket.emit('changeLEDState', state); //Here the actual socket-object function is called. If we want a response we will have to set up a function (.on) like earlier.
     console.log("changeLEDState called");
-
 }
 
 function lightPower(power) {
     socket.emit('lightPower', power);
     console.log("lightPower called");
-
 }
 
 function waterPumpPower(power) {
     socket.emit('waterPumpPower', power);
     console.log("waterPumpPower called");
-
 }
 
 //This function also emits something to the server. But in this case we want something a little bit more complex to happen.
@@ -60,6 +49,43 @@ function waterLevelData(interval) {
     //The intervall value is the period of time between each data transmit from the ESP32 to the server. Typical values can be everything form 100ms to 100s
     console.log("waterLevelData was called with interval: " + interval);
 } //Be careful to not set the interval value to low, you do not want to overflood your server with data/requests
+
+function requestDataFromBoard(interval){
+    waterLevelData(interval);
+    printDataValues();
+    //soilHygrometerData(interval);
+    //temperatureData(interval);
+    //lightData(interval);
+    //co2Data(interval);
+    //pHData(interval);
+}
+
+function stopDataFromBoard() { //Tells the server to stop all timers so that data is no longer sent from the ESP32 to the webpage
+    socket.emit('stopDataFromBoard'); //Here we tell the server to call the function "stopDataFromBoard"
+    console.log("stopDataFromBoard was called");
+}
+
+
+
+
+
+
+/*
+
+socket.on('graphSoilHygrometer', function(data) { //Received data from the server who is forwarding it to us from the ESP32
+    console.log('SoilHygrometer data was received: ' + data);
+    console.log(Number(data));
+    soilHygrometerArray.push(data); //This pushes data to the array that stores all the chart data
+    myLineChart.update(); //This updates the chart
+});
+*/
+
+
+
+
+
+
+/*
 
 function soilHygrometerData(interval) {
     socket.emit('soilHygrometerData', interval);
@@ -86,18 +112,5 @@ function lightData(interval){
     console.log("lightData was called with interval: " + interval);
 }
 
-function requestDataFromBoard(interval){
-    soilHygrometerData(interval);
-    temperatureData(interval);
-    waterLevelData(interval);
-    lightData(interval);
-    co2Data(interval);
-    pHData(interval);
-    printDataValues();
 
-}
-
-function stopDataFromBoard() { //Tells the server to stop all timers so that data is no longer sent from the ESP32 to the webpage
-    socket.emit('stopDataFromBoard'); //Here we tell the server to call the function "stopDataFromBoard"
-    console.log("stopDataFromBoard was called");
-}
+ */

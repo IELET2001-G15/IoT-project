@@ -84,74 +84,9 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
                 }, interval)
             );
         } else {
-            console.log("o short timeintervall");
-        }
-    });
-
-    socket.on('soilHygrometerData', function(interval) {
-        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-        if(interval > 99) {
-            timers.push(
-                setInterval(function(){
-                    io.emit('getSoilHygrometerData', 0);
-                }, interval)
-            );
-        } else {
             console.log("too short timeintervall");
         }
     });
-
-    socket.on('temperatureData', function(interval) {
-        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-        if(interval > 99) {
-            timers.push(
-                setInterval(function(){
-                    io.emit('getTemperatureData', 0);
-                }, interval)
-            );
-        } else {
-            console.log("too short timeintervall");
-        }
-    });
-
-    socket.on('co2Data', function(interval) {
-        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-        if(interval > 99) {
-            timers.push(
-                setInterval(function(){
-                    io.emit('getCO2Data', 0);
-                }, interval)
-            );
-        } else {
-            console.log("too short timeintervall");
-        }
-    });  
-    
-    socket.on('pHData', function(interval) {
-        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-        if(interval > 99) {
-            timers.push(
-                setInterval(function(){
-                    io.emit('getPHData', 0);
-                }, interval)
-            );
-        } else {
-            console.log("too short timeintervall");
-        }
-    }); 
-
-    socket.on('lightData', function(interval) {
-        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-        if(interval > 99) {
-            timers.push(
-                setInterval(function(){
-                    io.emit('getLightData', 0);
-                }, interval)
-            );
-        } else {
-            console.log("too short timeintervall");
-        }
-    }); 
 
     socket.on('stopDataFromBoard', function() { //This function stops all the timers set by a user so that data will no longer be sent to the webpage
         console.log('user ' + clientID + ' cleared data request interval');
@@ -170,6 +105,83 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         //This means the webbrowser will receive the data, and can then graph it or similar.
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
+
+});
+
+
+
+
+
+
+/*
+
+socket.on('soilHygrometerData', function(interval) {
+    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+    if(interval > 99) {
+        timers.push(
+            setInterval(function(){
+                io.emit('getSoilHygrometerData', 0);
+            }, interval)
+        );
+    } else {
+        console.log("too short timeintervall");
+    }
+});
+
+socket.on('temperatureData', function(interval) {
+    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+    if(interval > 99) {
+        timers.push(
+            setInterval(function(){
+                io.emit('getTemperatureData', 0);
+            }, interval)
+        );
+    } else {
+        console.log("too short timeintervall");
+    }
+});
+
+socket.on('co2Data', function(interval) {
+    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+    if(interval > 99) {
+        timers.push(
+            setInterval(function(){
+                io.emit('getCO2Data', 0);
+            }, interval)
+        );
+    } else {
+        console.log("too short timeintervall");
+    }
+});
+
+socket.on('pHData', function(interval) {
+    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+    if(interval > 99) {
+        timers.push(
+            setInterval(function(){
+                io.emit('getPHData', 0);
+            }, interval)
+        );
+    } else {
+        console.log("too short timeintervall");
+    }
+});
+
+socket.on('lightData', function(interval) {
+    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+    if(interval > 99) {
+        timers.push(
+            setInterval(function(){
+                io.emit('getLightData', 0);
+            }, interval)
+        );
+    } else {
+        console.log("too short timeintervall");
+    }
+});
+
+
+
 
     socket.on('soilHygrometer', function(data) {
         io.emit('graphSoilHygrometer', data);
@@ -195,6 +207,4 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         io.emit('graphLightSensor', data);
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
-});
-
-
+ */
