@@ -91,13 +91,16 @@ class AnalogOutput {
 
 AnalogInput waterLevelSensor(35, "waterLevelSensor");
 AnalogInput soilHygrometer(36, "soilHygrometer");
+AnalogInput temperatureSensor(41, "temperatureSensor");
+AnalogInput CO2Sensor(42, "CO2Sensor");
+AnalogInput pHSensor(43, "pHSensor");
+AnalogInput lightSensor(44, "lightSensor");
 AnalogOutput waterPump(33);
 AnalogOutput light(34);
 
 /**
- * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
- * appropriate member function. In this case reading sensor data from water level sensor and
- * sends it to server
+ * A series of wrapper functions to avoid static error. Handles event when server requests data, and redirects to the 
+ * appropriate member function
  * @param dataRequestData the message from the server
  * @param length the size of the message
 */
@@ -105,22 +108,30 @@ void getWaterLevelData(const char* dataRequestData, size_t length) {
     waterLevelSensor.sendData(dataRequestData);
 }
 
-/**
- * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
- * appropriate member function. In this case reading sensor data from soil hygrometer and
- * sends it to server
- * @param dataRequestData the message from the server
- * @param length the size of the message
-*/
 void getSoilHygrometerData(const char* dataRequestData, size_t length) {
     soilHygrometer.sendData(dataRequestData);
 }
 
+void getTemperatureData(const char* dataRequestData, size_t length) {
+    temperatureSensor.sendData(dataRequestData);
+}
+
+void getCO2Data(const char* dataRequestData, size_t length) {
+    CO2Sensor.sendData(dataRequestData);
+}
+
+void getPHData(const char* dataRequestData, size_t length) {
+    pHSensor.sendData(dataRequestData);
+}
+
+void getLightData(const char* dataRequestData, size_t length) {
+    lightSensor.sendData(dataRequestData);
+}
+
 /**
- * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
- * appropriate member function. In this case getting instructions to change the power to the
- * water pump
- * @param dataRequestData the message from the server
+ * A series of wrapper functions to avoid static error. Handles event when server sends data, and redirects to the 
+ * appropriate member function
+ * @param powerLevelData the message from the server
  * @param length the size of the message
 */
 void changeWaterPumpPower(const char* powerLevelData, size_t length) {
@@ -128,13 +139,6 @@ void changeWaterPumpPower(const char* powerLevelData, size_t length) {
     waterPump.power(powerLevelData);
 }
 
-/**
- * Wrapper to avoid static error. Handles event when server sends data and redirects to the 
- * appropriate member function. In this case getting instructions to change the power to the
- * light
- * @param dataRequestData the message from the server
- * @param length the size of the message
-*/
 void changeLightPower(const char* powerLevelData, size_t length) {
     log("Light - ");
     light.power(powerLevelData);
@@ -176,6 +180,10 @@ void setup() {
     webSocket.on("clientConnected", event);
     webSocket.on("getWaterLevelData", getWaterLevelData);
     webSocket.on("getSoilHygrometerData", getSoilHygrometerData);
+    webSocket.on("getTemperatureData", getTemperatureData);
+    webSocket.on("getCO2Data", getCO2Data);
+    webSocket.on("getPHData", getPHData);
+    webSocket.on("getLightData", getLightData);
     webSocket.on("changeLightPower", changeLightPower);
     webSocket.on("changeWaterPumpPower", changeWaterPumpPower);
 

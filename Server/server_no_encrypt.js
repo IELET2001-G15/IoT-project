@@ -39,6 +39,11 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         }
     });
 
+
+    /**#####################################################################################
+     * Change output on ESP
+     */
+
     socket.on('lightPower', function(power) { // Receives from webpage
         io.emit('changeLightPower', power);   // Sends to ESP
         console.log('user ' + clientID + ' changed the light power to [%]: ' + power);
@@ -48,9 +53,28 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         io.emit('changeWaterPumpPower', power);
         console.log('user ' + clientID + ' changed the water pump power to [%]: ' + power);
     });
+
+    //Change states (general user defined functions)
+    socket.on('changeLEDState', function(state) { //This server function constantly checks if a client (webpage) calls its
+        //If the webpage calles it it will us the "io.emit" (to send to alle clients) and not "client.emit" to only send to one client
+        //In this way, when we send it to call clients, the ESP32 will get the message. It is an easy solution which can be made better
+
+        io.emit('LEDStateChange', state); //This is the actual socket.io emit function
+        console.log('user ' + clientID + ' changed the LED state to: ' + state);
+        
+    });
+
+    /**#####################################################################################
+     * 
+     */
+
     var timers = []; //Stores all our timers
     //Read data from board section
 
+    
+    /**######################################################################################
+     * Request data from ESP
+     */
     socket.on('waterLevelData', function(interval) { // Receives from webpage
         console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
         if(interval > 99) {
@@ -77,12 +101,69 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         }
     });
 
+    socket.on('temperatureData', function(interval) {
+        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+        if(interval > 99) {
+            timers.push(
+                setInterval(function(){
+                    io.emit('getTemperatureData', 0);
+                }, interval)
+            );
+        } else {
+            console.log("too short timeintervall");
+        }
+    });
+
+    socket.on('co2Data', function(interval) {
+        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+        if(interval > 99) {
+            timers.push(
+                setInterval(function(){
+                    io.emit('getCO2Data', 0);
+                }, interval)
+            );
+        } else {
+            console.log("too short timeintervall");
+        }
+    });  
+    
+    socket.on('pHData', function(interval) {
+        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+        if(interval > 99) {
+            timers.push(
+                setInterval(function(){
+                    io.emit('getPHData', 0);
+                }, interval)
+            );
+        } else {
+            console.log("too short timeintervall");
+        }
+    }); 
+
+    socket.on('lightData', function(interval) {
+        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
+        if(interval > 99) {
+            timers.push(
+                setInterval(function(){
+                    io.emit('getLightData', 0);
+                }, interval)
+            );
+        } else {
+            console.log("too short timeintervall");
+        }
+    }); 
+
     socket.on('stopDataFromBoard', function() { //This function stops all the timers set by a user so that data will no longer be sent to the webpage
         console.log('user ' + clientID + ' cleared data request interval');
         for (var i = 0; i < timers.length; i++) {//For loop to clear all set timers
             clearTimeout(timers[i]); //Cleartimer is the same as stopping the timer, in this case we clear all possible timers previously set
         }
     });
+
+
+    /**#####################################################################################
+     * Send data to web page
+     */
 
     socket.on('waterLevelSensor', function(data) { //This is function that actually receives the data. The earlier one only starts the function.
         io.emit('graphWaterLevelSensor', data); //Everytime a "dataFromBoard" tag (with data) is sent to the server, "data" tag with the actual data is sent to all clients
@@ -95,14 +176,24 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
 
-    //Change states (general user defined functions)
-    socket.on('changeLEDState', function(state) { //This server function constantly checks if a client (webpage) calls its
-        //If the webpage calles it it will us the "io.emit" (to send to alle clients) and not "client.emit" to only send to one client
-        //In this way, when we send it to call clients, the ESP32 will get the message. It is an easy solution which can be made better
+    socket.on('temperatureSensor', function(data) {
+        io.emit('graphTemperatureSensor', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
 
-        io.emit('LEDStateChange', state); //This is the actual socket.io emit function
-        console.log('user ' + clientID + ' changed the LED state to: ' + state);
+    socket.on('CO2Sensor', function(data) {
+        io.emit('graphCO2Sensor', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
 
+    socket.on('pHSensor', function(data) {
+        io.emit('graphPHSensor', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
+
+    socket.on('lightSensor', function(data) {
+        io.emit('graphLightSensor', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
     });
 });
 
