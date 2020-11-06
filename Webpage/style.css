@@ -277,6 +277,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     display: flex;
     background-color: white;
     line-height: 150%;
+    align-items: center;
 
 }
 
@@ -284,13 +285,13 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     width: 35%;
     height: 70%;
     background-color: rgba(255, 255, 200, 1.0);
+
 }
 
 #div4-txt-data {
     width: 10%;
     height: 70%;
     background-color: rgba(255, 255, 150, 1.0);
-    align-items: center;
     justify-content: center;
 }
 
