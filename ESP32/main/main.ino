@@ -178,6 +178,7 @@ void setup() {
 
     webSocket.on("clientConnected", event);
     webSocket.on("getWaterLevelData", getWaterLevelData);
+
     webSocket.on("getSoilHygrometerData", getSoilHygrometerData);
     //webSocket.on("getTemperatureData", getTemperatureData);
     //webSocket.on("getCO2Data", getCO2Data);
