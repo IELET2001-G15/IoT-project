@@ -30,12 +30,6 @@ socket.on('graphTimers', function(timers) { //Received data from the server who 
 //In this function (which is essentially built up the same as a void function in Arduino) we want to send something to the server
 //For this we use the other important Socket.io function, .emit(arg). Here we are telling our socket object so call the "changeLEDState" function
 //on the server with the "state" argument. By calling the function on the server we mean that we send data to the server that tells it to do something
-function changeLEDState(state) {
-    //This function controls wether a LED-light is on or of
-    socket.emit('changeLEDState', state); //Here the actual socket-object function is called. If we want a response we will have to set up a function (.on) like earlier.
-    console.log("changeLEDState called");
-}
-
 function lightPower(power) {
     socket.emit('lightPower', power);
     console.log("lightPower called");

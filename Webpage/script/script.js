@@ -1,4 +1,5 @@
 // Graph live data
+
 var waterLevelArray = [60, 10, 20, 50]; /* The chart data for "Data 1", altering this array/list changes the graph data */
 var waterPumpPowerArray = [10, 15, 20, 35, 40, 70, 100]; /* The chart data for "Data 1", altering this array/list changes the graph data */
 var soilHygrometerArray = [2, 100, 50, 130, 20, 10, 50, 420, 50, 10]; /* The chart data for "Data 2", altering this array/list changes the graph data */
@@ -8,6 +9,7 @@ var co2Array = [60, 10, 20, 50]; /* The chart data for "Data 1", altering this a
 var pHArray = [60, 10, 20, 50]; /* The chart data for "Data 1", altering this array/list changes the graph data */
 
 var timersArray = [];
+
 
 
 var allData = [waterLevelArray, waterPumpPowerArray, soilHygrometerArray, lightSensitivityArray, temperatureArray, co2Array, pHArray];
