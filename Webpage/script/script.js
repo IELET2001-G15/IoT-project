@@ -7,6 +7,9 @@ var temperatureArray = [60, 10, 20, 50]; /* The chart data for "Data 1", alterin
 var co2Array = [60, 10, 20, 50]; /* The chart data for "Data 1", altering this array/list changes the graph data */
 var pHArray = [60, 10, 20, 50]; /* The chart data for "Data 1", altering this array/list changes the graph data */
 
+var timersArray = [];
+
+
 var allData = [waterLevelArray, waterPumpPowerArray, soilHygrometerArray, lightSensitivityArray, temperatureArray, co2Array, pHArray];
 var xaxis = ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '08:00', '09:00', '10:00'];
 

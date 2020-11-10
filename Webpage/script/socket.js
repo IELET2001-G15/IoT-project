@@ -19,6 +19,14 @@ socket.on('graphWaterLevelSensor', function(data) { //Received data from the ser
     myLineChart.update(); //This updates the chart
 });
 
+socket.on('graphTimers', function(timers) { //Received data from the server who is forwarding it to us from the ESP32
+    console.log('WaterLevelSensor data was received: ' + timers);
+    console.log(Number(timers));
+    timersArray = timers;
+    myLineChart.update(); //This updates the chart
+});
+
+
 //In this function (which is essentially built up the same as a void function in Arduino) we want to send something to the server
 //For this we use the other important Socket.io function, .emit(arg). Here we are telling our socket object so call the "changeLEDState" function
 //on the server with the "state" argument. By calling the function on the server we mean that we send data to the server that tells it to do something
@@ -53,6 +61,7 @@ function waterLevelData(interval) {
 function requestDataFromBoard(interval){
     waterLevelData(interval);
     printDataValues();
+
     //soilHygrometerData(interval);
     //temperatureData(interval);
     //lightData(interval);

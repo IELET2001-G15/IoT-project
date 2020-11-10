@@ -13,6 +13,7 @@ server.listen(serverPort, function(){ //Here we tell the server to start listeni
     console.log('listening on *:' + serverPort);
 });
 
+
 io.on('connection', function(socket){ //This is the server part of the "what happens when we first connect" function. Everytime a user connects a instance of this is set up for the user privatley
     console.log('a user connected'); //The server print this message
 
@@ -65,16 +66,16 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
     });
 
     /**#####################################################################################
-     * 
+     *
      */
 
     var timers = []; //Stores all our timers
     //Read data from board section
 
-    
     /**######################################################################################
      * Request data from ESP
      */
+
     socket.on('waterLevelData', function(interval) { // Receives from webpage
         console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
         if(interval > 99) {
@@ -84,7 +85,7 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
                 }, interval)
             );
         } else {
-            console.log("too short timeintervall");
+            console.log("too short time interval");
         }
     });
 
@@ -102,9 +103,13 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
 
     socket.on('waterLevelSensor', function(data) { //This is function that actually receives the data. The earlier one only starts the function.
         io.emit('graphWaterLevelSensor', data); //Everytime a "dataFromBoard" tag (with data) is sent to the server, "data" tag with the actual data is sent to all clients
+        io.emit('graphTimers', timers); //Everytime a "dataFromBoard" tag (with data) is sent to the server, "data" tag with the actual data is sent to all clients
         //This means the webbrowser will receive the data, and can then graph it or similar.
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
+
+
+
 
 });
 
