@@ -14,14 +14,14 @@ const bool g_DEBUG = true;
 
 /**
  * Debugging tool
- * @param message1 the message of arbitrary data type to display in console first
- * @param message2 the message of arbitrary data type to display in console after
+ * @param firstThing the message of arbitrary data type to display in console first
+ * @param secondThing the message of arbitrary data type to display in console after
 */
-template<typename T>
-void logEvent(T message1, T message2=nullptr) {
+template<typename T1, typename T2>
+void logEvent(T1 firstThing, T2 secondThing=nullptr) {
     if (g_DEBUG) {
-        Serial.print(message1);
-        Serial.println(message2);
+        Serial.print(firstThing);
+        Serial.println(secondThing);
     }
 }
 
@@ -49,9 +49,8 @@ class AnalogInput {
          * @param payload the message sent from the server. Can be omitted
         */
         void sendData() {
-            char buffer[17];
-            itoa(analogRead(_pin), buffer, 17);
-            //logEvent(_identifier + " sent data: ", buffer);
+            char buffer[33];
+            sprintf(buffer, "%d", analogRead(_pin));
             webSocket.emit(_identifier, buffer);
         }
 
@@ -69,9 +68,9 @@ class AnalogInput {
 */
 class AnalogOutput {
     public:
-        AnalogOutput(uint8_t pin/*, char* identifier*/) {
+        AnalogOutput(uint8_t pin, char* identifier) {
             _pin = pin;
-            //_identifier = identifier;
+            _identifier = identifier;
             pinMode(_pin, OUTPUT);
         }
 
@@ -81,13 +80,13 @@ class AnalogOutput {
         */
         void power(const char* powerLevelData) {
             uint8_t powerLevel = atoi(powerLevelData);
-            //logEvent(_identifier + " power level: ", powerLevel);
+            logEvent("power level: ", powerLevel);
             analogWrite(_pin, map(powerLevel, 0, 100, 0, 255));
         }
 
     private:
         uint8_t _pin;
-        //char* _identifier;
+        char* _identifier;
 };
 
 AnalogInput waterLevelSensor(35, "waterLevelSensor");
@@ -96,8 +95,8 @@ AnalogInput soilHygrometer(36, "soilHygrometer");
 //AnalogInput CO2Sensor(42, "CO2Sensor");
 //AnalogInput pHSensor(43, "pHSensor");
 //AnalogInput lightSensor(44, "lightSensor");
-AnalogOutput waterPump(33/*, "waterPump"*/);
-AnalogOutput light(34/*, "light"*/);
+AnalogOutput waterPump(33, "waterPump");
+AnalogOutput light(34, "light");
 
 /**
  * A series of wrapper functions to avoid static error. Handles event when server requests data, and redirects to the 
@@ -178,7 +177,6 @@ void setup() {
 
     webSocket.on("clientConnected", event);
     webSocket.on("getWaterLevelData", getWaterLevelData);
-
     webSocket.on("getSoilHygrometerData", getSoilHygrometerData);
     //webSocket.on("getTemperatureData", getTemperatureData);
     //webSocket.on("getCO2Data", getCO2Data);
