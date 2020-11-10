@@ -6,22 +6,22 @@
 WiFiMulti WiFiMulti;
 SocketIoClient webSocket;
 
-const char* SSID = "G6_9463";
-const char* PASS = "UrteneEr100%Torre";
-const char* IP = "192.168.137.145";
-uint16_t PORT = 2520;
-const bool DEBUG = true;
+const char* g_SSID = "G6_9463";
+const char* g_PASS = "UrteneEr100%Torre";
+const char* g_IP = "192.168.137.145";
+const uint16_t g_PORT = 2520;
+const bool g_DEBUG = true;
 
 /**
  * Debugging tool
- * @param thingToLog the data of arbitrary data type to display in console
- * @param description the optional description of the displayed data
+ * @param message1 the message of arbitrary data type to display in console first
+ * @param message2 the message of arbitrary data type to display in console after
 */
 template<typename T>
-void log(T thingToLog, char* description=nullptr) {
-    if (DEBUG) {
-        Serial.print(description);
-        Serial.println(thingToLog);
+void logEvent(T message1, T message2=nullptr) {
+    if (g_DEBUG) {
+        Serial.print(message1);
+        Serial.println(message2);
     }
 }
 
@@ -46,14 +46,12 @@ class AnalogInput {
          * 4095 as text. Needs a wrapper function for each sendData() object to work around the problem
          * of using non-static members in webSocket.on() method. This wrapper function have to have the
          * format: void wrapper(const char* data, size_t length) {instanceName.sendData(data);}
-         * @param dataRequestData the message sent from the server. Can be omitted
+         * @param payload the message sent from the server. Can be omitted
         */
-        void sendData(const char* dataRequestData) {
-            uint8_t request = atoi(dataRequestData);
+        void sendData() {
             char buffer[17];
             itoa(analogRead(_pin), buffer, 17);
-            log(request, "Request: ");
-            log(buffer, "ITOA TEST: ");
+            //logEvent(_identifier + " sent data: ", buffer);
             webSocket.emit(_identifier, buffer);
         }
 
@@ -67,11 +65,13 @@ class AnalogInput {
  * work as intended, specifically the ESP32 analogWrite library, and a wrapper function for each 
  * power() object to work around the problem of using non-static members in webSocket.on() method
  * @param pin the pin the output is connected to
+ * @param identifier the ID for the output
 */
 class AnalogOutput {
     public:
-        AnalogOutput(uint8_t pin) {
+        AnalogOutput(uint8_t pin/*, char* identifier*/) {
             _pin = pin;
+            //_identifier = identifier;
             pinMode(_pin, OUTPUT);
         }
 
@@ -81,53 +81,54 @@ class AnalogOutput {
         */
         void power(const char* powerLevelData) {
             uint8_t powerLevel = atoi(powerLevelData);
-            log(powerLevel, "Received power level: ");
+            //logEvent(_identifier + " power level: ", powerLevel);
             analogWrite(_pin, map(powerLevel, 0, 100, 0, 255));
         }
 
     private:
         uint8_t _pin;
+        //char* _identifier;
 };
 
 AnalogInput waterLevelSensor(35, "waterLevelSensor");
 AnalogInput soilHygrometer(36, "soilHygrometer");
-AnalogInput temperatureSensor(41, "temperatureSensor");
-AnalogInput CO2Sensor(42, "CO2Sensor");
-AnalogInput pHSensor(43, "pHSensor");
-AnalogInput lightSensor(44, "lightSensor");
-AnalogOutput waterPump(33);
-AnalogOutput light(34);
+//AnalogInput temperatureSensor(41, "temperatureSensor");
+//AnalogInput CO2Sensor(42, "CO2Sensor");
+//AnalogInput pHSensor(43, "pHSensor");
+//AnalogInput lightSensor(44, "lightSensor");
+AnalogOutput waterPump(33/*, "waterPump"*/);
+AnalogOutput light(34/*, "light"*/);
 
 /**
  * A series of wrapper functions to avoid static error. Handles event when server requests data, and redirects to the 
  * appropriate member function
- * @param dataRequestData the message from the server
+ * @param payload the message from the server
  * @param length the size of the message
 */
-void getWaterLevelData(const char* dataRequestData, size_t length) {
-    waterLevelSensor.sendData(dataRequestData);
+void getWaterLevelData(const char* payload, size_t length) {
+    waterLevelSensor.sendData();
 }
 
-void getSoilHygrometerData(const char* dataRequestData, size_t length) {
-    soilHygrometer.sendData(dataRequestData);
+void getSoilHygrometerData(const char* payload, size_t length) {
+    soilHygrometer.sendData();
+}
+/*
+void getTemperatureData(const char* payload, size_t length) {
+    temperatureSensor.sendData();
 }
 
-void getTemperatureData(const char* dataRequestData, size_t length) {
-    temperatureSensor.sendData(dataRequestData);
+void getCO2Data(const char* payload, size_t length) {
+    CO2Sensor.sendData();
 }
 
-void getCO2Data(const char* dataRequestData, size_t length) {
-    CO2Sensor.sendData(dataRequestData);
+void getPHData(const char* payload, size_t length) {
+    pHSensor.sendData();
 }
 
-void getPHData(const char* dataRequestData, size_t length) {
-    pHSensor.sendData(dataRequestData);
+void getLightData(const char* payload, size_t length) {
+    lightSensor.sendData();
 }
-
-void getLightData(const char* dataRequestData, size_t length) {
-    lightSensor.sendData(dataRequestData);
-}
-
+*/
 /**
  * A series of wrapper functions to avoid static error. Handles event when server sends data, and redirects to the 
  * appropriate member function
@@ -135,12 +136,10 @@ void getLightData(const char* dataRequestData, size_t length) {
  * @param length the size of the message
 */
 void changeWaterPumpPower(const char* powerLevelData, size_t length) {
-    log("Water pump - ");
     waterPump.power(powerLevelData);
 }
 
 void changeLightPower(const char* powerLevelData, size_t length) {
-    log("Light - ");
     light.power(powerLevelData);
 }
 
@@ -149,8 +148,8 @@ void changeLightPower(const char* powerLevelData, size_t length) {
  * @param payload the message from containing client ID and IP
  * @param length the size of the message
 */
-void event(const char* payload, size_t length) { //Default event, what happens when you connect
-    Serial.printf("ID, IP: %s\n", payload);
+void event(const char* payload, size_t length) {
+    logEvent(payload, "ID, IP: ");
 }
 
 /**
@@ -162,13 +161,13 @@ void setup() {
     Serial.setDebugOutput(true); //Set debug to true (during ESP32 booting)
     Serial.print("\n\n\n");
 
-    for (uint8_t t = 4; t > 0 && DEBUG; t--) {
+    for (uint8_t t = 4; t > 0 && g_DEBUG; t--) {
         Serial.printf("[SETUP] BOOT WAIT %d...\n", t);
         Serial.flush();
         delay(1000);
     }
 
-    WiFiMulti.addAP(SSID, PASS);
+    WiFiMulti.addAP(g_SSID, g_PASS);
     
     Serial.print("Connecting to WiFi");
     while (WiFiMulti.run() != WL_CONNECTED) { // Wait for a successfull WiFi connection
@@ -180,14 +179,14 @@ void setup() {
     webSocket.on("clientConnected", event);
     webSocket.on("getWaterLevelData", getWaterLevelData);
     webSocket.on("getSoilHygrometerData", getSoilHygrometerData);
-    webSocket.on("getTemperatureData", getTemperatureData);
-    webSocket.on("getCO2Data", getCO2Data);
-    webSocket.on("getPHData", getPHData);
-    webSocket.on("getLightData", getLightData);
+    //webSocket.on("getTemperatureData", getTemperatureData);
+    //webSocket.on("getCO2Data", getCO2Data);
+    //webSocket.on("getPHData", getPHData);
+    //webSocket.on("getLightData", getLightData);
     webSocket.on("changeLightPower", changeLightPower);
     webSocket.on("changeWaterPumpPower", changeWaterPumpPower);
 
-    webSocket.begin(IP, PORT);
+    webSocket.begin(g_IP, g_PORT);
 }
 
 /**
