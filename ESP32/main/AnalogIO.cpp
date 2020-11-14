@@ -1,7 +1,7 @@
-/*
-  Morse.cpp - Library for flashing Morse code.
-  Created by David A. Mellis, November 2, 2007.
-  Released into the public domain.
+/**
+ * AnalogIO.cpp - Library for reading and writing to ESP32 pins.
+ * Created by Espen Holsen, November 14, 2020.
+ * Released into the public domain.
 */
 
 #include <Arduino.h>
