@@ -16,8 +16,11 @@ socket.on('graphWaterLevelSensor', function(data) { //Received data from the ser
     console.log('WaterLevelSensor data was received: ' + data);
     console.log(Number(data));
     waterLevelArray.push(Number(data)); //This pushes data to the array that stores all the chart data
-
     myLineChart.update(); //This updates the chart
+
+    printDataValues();
+    console.log(timersArray)
+    console.log(waterLevelArray)
 });
 
 socket.on('graphTimers', function(timers) { //Received data from the server who is forwarding it to us from the ESP32
@@ -62,9 +65,6 @@ function waterLevelData(interval) {
 
 function requestDataFromBoard(interval){
     waterLevelData(interval);
-    printDataValues();
-    console.log(timersArray)
-    console.log(waterLevelArray)
 
     //soilHygrometerData(interval);
     //temperatureData(interval);
