@@ -28,15 +28,14 @@ const uint16_t g_PORT = 2520;
 
 /**
  * Formats a number to a string. For example 1234 becomes "1234". Supports up to a four digit 
- * number. Change buffer size to accomodate more digits
+ * integer. Change buffer size to accomodate more digits
  * @param identifier the ID that the server will recognize
- * @param format the format of the string. For example 
- * @param number the number to convert to string
- * @return buffer the number formated as a string
+ * @param format the format of the string. For example "%d" for integer and "%f" for float
+ * @param value the number to be formated as a string and sent to server
 */
-void send(const char* identifier, const char* format, uint16_t number) {
+void send(const char* identifier, const char* format, uint16_t value) {
     char buffer[33];
-    sprintf(buffer, format, number);
+    sprintf(buffer, format, value);
     webSocket.emit(identifier, buffer);
 }
 
@@ -49,16 +48,16 @@ void sendWaterLevelData(const char* payload, size_t length) {
     send("waterLevelSensor", "%d", waterLevelSensor.read());
 }
 
-void sendSoilHygrometerData(const char* payload, size_t length) {
+void sendSoilHumidityData(const char* payload, size_t length) {
     send("soilHygrometer", "%d", soilHygrometer.read());
 }
 
 void sendTemperatureData(const char* payload, size_t length) {
-    send("temperatureSensor", "%d", bme.readTemperature());
+    send("temperature", "%f", bme.readTemperature());
 }
 
-void sendAirHygrometerData(const char* payload, size_t length) {
-    send("temperatureSensor", "%d", bme.readHumidity());
+void sendAirHumidityData(const char* payload, size_t length) {
+    send("airHumidity", "%f", bme.readHumidity());
 }
 
 /**
@@ -110,7 +109,9 @@ void setup() {
 
     webSocket.on("clientConnected", event);
     webSocket.on("getWaterLevelData", sendWaterLevelData);
-    webSocket.on("getSoilHygrometerData", sendSoilHygrometerData);
+    webSocket.on("getSoilHygrometerData", sendSoilHumidityData);
+     webSocket.on("getTemperatureData", sendTemperatureData);
+    webSocket.on("getAirHumidityData", sendAirHumidityData);
     webSocket.on("changeLightPower", changeLightPower);
     webSocket.on("changeWaterPumpPower", changeWaterPumpPower);
 
