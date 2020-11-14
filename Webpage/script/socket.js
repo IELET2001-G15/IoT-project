@@ -17,12 +17,22 @@ socket.on('graphWaterLevelSensor', function(data) { //Received data from the ser
     console.log(Number(data));
     waterLevelArray.push(Number(data)); //This pushes data to the array that stores all the chart data
     myLineChart.update(); //This updates the chart
+
+    printDataValues();
+    console.log(timersArray)
+    console.log(waterLevelArray)
 });
 
 socket.on('graphTimers', function(timers) { //Received data from the server who is forwarding it to us from the ESP32
     console.log('Timer data was received: ' + timers);
     console.log(Number(timers));
-    timersArray = timers;
+    timersArray.push(Number(timers));
+
+    var hours = new Date().getHours();
+    var minutes = new Date().getMinutes();
+    var currentTime = hours + ":" + minutes;
+
+    timersArray1.push(currentTime)
     myLineChart.update(); //This updates the chart
 });
 
@@ -46,6 +56,7 @@ function waterPumpPower(power) {
 //Since the ESP32 easily can react to such a request it sends the data with no problems, and with no timers in use.
 //This means we dont have to use the delay() function or the millis() function in Arduino, we can just let Node and JavaScript fix the tracking of time for us
 //This is the function that will make the ESP32 transmit data to the server, and not the other way around
+
 function waterLevelData(interval) {
     socket.emit('waterLevelData', interval); //Here we tell the server to call the function "requestDataFromBoard" with a argument called "intervall"
     //The intervall value is the period of time between each data transmit from the ESP32 to the server. Typical values can be everything form 100ms to 100s
@@ -54,7 +65,6 @@ function waterLevelData(interval) {
 
 function requestDataFromBoard(interval){
     waterLevelData(interval);
-    printDataValues();
 
     //soilHygrometerData(interval);
     //temperatureData(interval);

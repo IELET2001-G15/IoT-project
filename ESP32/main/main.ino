@@ -1,154 +1,118 @@
-#include <analogWrite.h>
+/**
+ * main.ino - Main file for sending and receiving data between web server and ESP32
+ * Created by Espen Holsen, November 14, 2020.
+ * Released into the public domain.
+*/
+
+#include "AnalogIO.h"
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <SocketIoClient.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+#include <ESP32Servo.h>
+
+AnalogIO waterLevelSensor(35, INPUT);
+AnalogIO soilHygrometer(32, INPUT);
+AnalogIO waterPump(33, OUTPUT);
+AnalogIO light(25, OUTPUT);
 
 WiFiMulti WiFiMulti;
 SocketIoClient webSocket;
+Adafruit_BME280 bme;
+Servo servo;
 
 const char* g_SSID = "G6_9463";
 const char* g_PASS = "UrteneEr100%Torre";
 const char* g_IP = "192.168.137.145";
 const uint16_t g_PORT = 2520;
-const bool g_DEBUG = true;
 
 /**
- * Debugging tool
- * @param firstThing the message of arbitrary data type to display in console first
- * @param secondThing the message of arbitrary data type to display in console after
+ * Formats a number to a string. For example 1234 becomes "1234". Supports up to a four digit 
+ * integer. Change buffer size to accomodate more digits
+ * @param identifier the ID that the server will recognize
+ * @param format the format of the string. For example "%d" for integer and "%f" for float
+ * @param value the number to be formated as a string and sent to server
 */
-template<typename T1, typename T2>
-void logEvent(T1 firstThing, T2 secondThing=nullptr) {
-    if (g_DEBUG) {
-        Serial.print(firstThing);
-        Serial.println(secondThing);
-    }
+void send(const char* identifier, const char* format, uint16_t value) {
+    char buffer[33];
+    sprintf(buffer, format, value);
+    webSocket.emit(identifier, buffer);
 }
 
 /**
- * Includes all functions and attibutes related to sensors and other input from pins.
- * Requires some dependencies to work as intended, specifically an instance of SocketIoClient 
- * called webSocket, and a wrapper function for each sendData() object to work around the problem
- * of using non-static members in webSocket.on() method
- * @param pin the pin the input is connected to
- * @param identifier the ID for the server to recognize each sensor
-*/
-class AnalogInput {
-    public:
-        AnalogInput(uint8_t pin, char* identifier) {
-            _pin = pin;
-            _identifier = identifier;
-            pinMode(_pin, INPUT);
-        }
-
-        /**
-         * Measures the sensor value and sends sensor data to the server as a number between 0 and 
-         * 4095 as text. Needs a wrapper function for each sendData() object to work around the problem
-         * of using non-static members in webSocket.on() method. This wrapper function have to have the
-         * format: void wrapper(const char* data, size_t length) {instanceName.sendData(data);}
-         * @param payload the message sent from the server. Can be omitted
-        */
-        void sendData() {
-            char buffer[33];
-            sprintf(buffer, "%d", analogRead(_pin));
-            webSocket.emit(_identifier, buffer);
-        }
-
-    private:
-        uint8_t _pin;
-        char* _identifier;
-};
-
-/**
- * Includes all functions and attibutes related to output from pins. Requires some dependencies to 
- * work as intended, specifically the ESP32 analogWrite library, and a wrapper function for each 
- * power() object to work around the problem of using non-static members in webSocket.on() method
- * @param pin the pin the output is connected to
- * @param identifier the ID for the output
-*/
-class AnalogOutput {
-    public:
-        AnalogOutput(uint8_t pin, char* identifier) {
-            _pin = pin;
-            _identifier = identifier;
-            pinMode(_pin, OUTPUT);
-        }
-
-        /**
-         * Changes the power to the output to the value specified from server between 0 and 100%
-         * @param powerLevelData the data from the server containing the power in text
-        */
-        void power(const char* powerLevelData) {
-            uint8_t powerLevel = atoi(powerLevelData);
-            logEvent("power level: ", powerLevel);
-            analogWrite(_pin, map(powerLevel, 0, 100, 0, 255));
-        }
-
-    private:
-        uint8_t _pin;
-        char* _identifier;
-};
-
-AnalogInput waterLevelSensor(35, "waterLevelSensor");
-AnalogInput soilHygrometer(36, "soilHygrometer");
-//AnalogInput temperatureSensor(41, "temperatureSensor");
-//AnalogInput CO2Sensor(42, "CO2Sensor");
-//AnalogInput pHSensor(43, "pHSensor");
-//AnalogInput lightSensor(44, "lightSensor");
-AnalogOutput waterPump(33, "waterPump");
-AnalogOutput light(34, "light");
-
-/**
- * A series of wrapper functions to avoid static error. Handles event when server requests data, and redirects to the 
- * appropriate member function
+ * Handles event when server requests data and sends the data to server
  * @param payload the message from the server
  * @param length the size of the message
 */
-void getWaterLevelData(const char* payload, size_t length) {
-    waterLevelSensor.sendData();
+void sendWaterLevel(const char* payload, size_t length) {
+    send("waterLevelSensor", "%d", waterLevelSensor.read());
 }
 
-void getSoilHygrometerData(const char* payload, size_t length) {
-    soilHygrometer.sendData();
+void sendSoilHumidity(const char* payload, size_t length) {
+    send("soilHygrometer", "%d", soilHygrometer.read());
 }
+
+void sendTemperature(const char* payload, size_t length) {
+    send("temperature", "%f", bme.readTemperature());
+}
+
+void sendAirHumidity(const char* payload, size_t length) {
+    send("airHumidity", "%f", bme.readHumidity());
+}
+
 /*
-void getTemperatureData(const char* payload, size_t length) {
-    temperatureSensor.sendData();
-}
-
-void getCO2Data(const char* payload, size_t length) {
-    CO2Sensor.sendData();
-}
-
-void getPHData(const char* payload, size_t length) {
-    pHSensor.sendData();
-}
-
-void getLightData(const char* payload, size_t length) {
-    lightSensor.sendData();
+void sendData(const char* identifier, size_t length) {
+    switch (identifier) {
+        case "temperature": 
+            send(identifier, "%f", bme.readTemperature()); break;
+        case "airHumidity":
+            send(identifier, "%f", bme.readHumidity()); break;
+        case "soilHumidity":
+            send(identifier, "%d", soilHygrometer.read()); break;
+        case "waterLevel":
+            send(identifier, "%d", waterLevelSensor.read()); break;
+        default:
+            send("temperature", "%f", bme.readTemperature());
+            send("airHumidity", "%f", bme.readHumidity());
+            send("soilHumidity", "%d", soilHygrometer.read());
+            send("waterLevel", "%d", waterLevelSensor.read());
+    }
 }
 */
+
 /**
- * A series of wrapper functions to avoid static error. Handles event when server sends data, and redirects to the 
- * appropriate member function
- * @param powerLevelData the message from the server
+ * Handles event when server sends data and changes outputs accordingly
+ * @param level the message from the server
  * @param length the size of the message
 */
-void changeWaterPumpPower(const char* powerLevelData, size_t length) {
-    waterPump.power(powerLevelData);
+void changeWaterPumpPower(const char* level, size_t length) {
+    Serial.printf("Set to [%s]\n", level);
+    waterPump.write(atoi(level));
 }
 
-void changeLightPower(const char* powerLevelData, size_t length) {
-    light.power(powerLevelData);
+void changeLightPower(const char* level, size_t length) {
+    Serial.printf("Set to [%s]\n", level);
+    light.write(atoi(level));
 }
 
 /**
- * Runs when ESP32 connects to server and displays client ID and IP
+ * Handles event when server asks for change in vent opening
+ * @param angle the angle the servo-motor should turn
+ * @param length the size of the message
+*/
+void openVent(const char* angle, size_t length) {
+    servo.write(atoi(angle));
+}
+
+/**
+ * Runs when a new client connects to server and displays client ID and IP
  * @param payload the message from containing client ID and IP
  * @param length the size of the message
 */
-void event(const char* payload, size_t length) {
-    logEvent(payload, "ID, IP: ");
+void clientConnected(const char* payload, size_t length) {
+    Serial.printf("ID, IP: %s", payload);
 }
 
 /**
@@ -156,11 +120,16 @@ void event(const char* payload, size_t length) {
  * the server can trigger
 */
 void setup() {
+    bme.begin();
+    
+    servo.setPeriodHertz(50);
+    servo.attach(16, 1000, 2000);
+
     Serial.begin(9600);
     Serial.setDebugOutput(true); //Set debug to true (during ESP32 booting)
     Serial.print("\n\n\n");
 
-    for (uint8_t t = 4; t > 0 && g_DEBUG; t--) {
+    for (uint8_t t = 4; t > 0; t--) {
         Serial.printf("[SETUP] BOOT WAIT %d...\n", t);
         Serial.flush();
         delay(1000);
@@ -169,21 +138,18 @@ void setup() {
     WiFiMulti.addAP(g_SSID, g_PASS);
     
     Serial.print("Connecting to WiFi");
-    while (WiFiMulti.run() != WL_CONNECTED) { // Wait for a successfull WiFi connection
-        Serial.print('.');
-        delay(50);
-    }
-    Serial.print("\nConnected to WiFi successfully!\n");
+    while (WiFiMulti.run() != WL_CONNECTED) Serial.print('.');
+    Serial.print("\nConnected to WiFi successfully!\n\n\n");
 
-    webSocket.on("clientConnected", event);
-    webSocket.on("getWaterLevelData", getWaterLevelData);
-    webSocket.on("getSoilHygrometerData", getSoilHygrometerData);
-    //webSocket.on("getTemperatureData", getTemperatureData);
-    //webSocket.on("getCO2Data", getCO2Data);
-    //webSocket.on("getPHData", getPHData);
-    //webSocket.on("getLightData", getLightData);
+    webSocket.on("clientConnected", clientConnected);
+    //webSocket.on("sendData", sendData);
+    webSocket.on("getWaterLevelData", sendWaterLevel);
+    webSocket.on("getSoilHygrometerData", sendSoilHumidity);
+    webSocket.on("sendTemperature", sendTemperature);
+    webSocket.on("sendAirHumidity", sendAirHumidity);
     webSocket.on("changeLightPower", changeLightPower);
     webSocket.on("changeWaterPumpPower", changeWaterPumpPower);
+    webSocket.on("openVent", openVent);
 
     webSocket.begin(g_IP, g_PORT);
 }
