@@ -25,7 +25,7 @@ Servo servo;
 
 const char* g_SSID = "G6_9463";
 const char* g_PASS = "UrteneEr100%Torre";
-const char* g_IP = "192.168.137.145";
+const char* g_IP = "192.168.137.151";
 const uint16_t g_PORT = 2520;
 
 /**

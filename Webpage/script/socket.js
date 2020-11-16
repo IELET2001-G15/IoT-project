@@ -1,4 +1,4 @@
-var socket = io.connect('192.168.137.145:2520', {secure: false});
+var socket = io.connect('192.168.137.151:2520', {secure: false});
 
 var interval = 1000;
 var timer;
