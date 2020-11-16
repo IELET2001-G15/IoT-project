@@ -47,20 +47,19 @@ void send(const char* identifier, const char* format, uint16_t value) {
  * @param length the size of the message
 */
 void sendData(const char* identifier, size_t length) {
-    switch (identifier) {
-        case "temperature": 
-            send(identifier, "%f", bme.readTemperature()); break;
-        case "airHumidity":
-            send(identifier, "%f", bme.readHumidity()); break;
-        case "soilHumidity":
-            send(identifier, "%d", soilHygrometer.read()); break;
-        case "waterLevel":
-            send(identifier, "%d", waterLevelSensor.read()); break;
-        default:
-            send("temperature", "%f", bme.readTemperature());
-            send("airHumidity", "%f", bme.readHumidity());
-            send("soilHumidity", "%d", soilHygrometer.read());
-            send("waterLevel", "%d", waterLevelSensor.read());
+    if (identifier == "temperature") {
+        send("temperature", "%f", bme.readTemperature());
+    } else if (identifier == "airHumidity") {
+        send("airHumidity", "%f", bme.readHumidity());
+    } else if (identifier == "soilHumidity") {
+        send("soilHumidity", "%d", soilHygrometer.read());
+    } else if (identifier == "waterLevel") {
+        send("waterLevel", "%d", waterLevelSensor.read());
+    } else {
+        send("temperature", "%f", bme.readTemperature());
+        send("airHumidity", "%f", bme.readHumidity());
+        send("soilHumidity", "%d", soilHygrometer.read());
+        send("waterLevel", "%d", waterLevelSensor.read());
     }
 }
 
@@ -95,7 +94,7 @@ void changeVentAngle(const char* angle, size_t length) {
  * @param length the size of the message
 */
 void clientConnected(const char* payload, size_t length) {
-    Serial.printf("ID, IP: %s", payload);
+    Serial.printf("ID, IP: %s\n", payload);
 }
 
 /**
