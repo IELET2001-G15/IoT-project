@@ -114,7 +114,3 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
 });
-
-
-
-

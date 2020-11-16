@@ -30,6 +30,5 @@ function updateTime() {
     var hours = new Date().getHours();
     var minutes = new Date().getMinutes();
     var currentTime = hours + ":" + minutes;
-
     timeArray.push(currentTime);
 }

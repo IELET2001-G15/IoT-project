@@ -109,7 +109,6 @@ void setup() {
 
     Serial.begin(9600);
     Serial.setDebugOutput(true); //Set debug to true (during ESP32 booting)
-    Serial.print("\n\n\n");
 
     for (uint8_t t = 4; t > 0; t--) {
         Serial.printf("[SETUP] BOOT WAIT %d...\n", t);

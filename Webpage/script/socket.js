@@ -64,7 +64,9 @@ function ventAngle(angle) {
 
 //#####################################################################################################
 
-function requestDataFromBoard(request) {
+function requestDataFromBoard(request, interval) {
+    clearTimeout(timer);
+    changeInterval(interval);
     socket.emit('requestDataFromBoard', request);
     console.log('requestDataFropushd was called with request: ' + request);
 }
@@ -75,13 +77,12 @@ function stopDataFromBoard() {
     console.log("stopDataFromBoard was called");
 }
 
-function changeInterval(newInterval) {
+function changeInterval(interval) {
     timer = setInterval(function() {
-                updateTime();
-                printDataValues();
                 myLineChart.update();
-            }, newInterval);
-    interval = newInterval;
-    socket.emit('changeInterval', newInterval);
-    console.log('changeInterval was called with newInterval [ms]: ' + newInterval);
+                printDataValues();
+                updateTime();
+            }, interval);
+    socket.emit('changeInterval', interval);
+    console.log('changeInterval was called with newInterval [ms]: ' + interval);
 }
