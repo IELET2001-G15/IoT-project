@@ -14,10 +14,8 @@ socket.on('clientConnected', function(id, ip) { //This is our selfmade functions
 
 socket.on('graphWaterLevelSensor', function(data) { //Received data from the server who is forwarding it to us from the ESP32
     console.log('WaterLevelSensor data was received: ' + data);
-    console.log(Number(data));
     waterLevelArray.push(Number(data)); //This pushes data to the array that stores all the chart data
-    myLineChart.update(); //This updates the chart
-
+    myLineChart.update(); //This updates the charge
     printDataValues();
     console.log(timersArray)
     console.log(waterLevelArray)
@@ -43,6 +41,8 @@ socket.on('graphTimers', function(timers) { //Received data from the server who 
 function lightPower(power) {
     socket.emit('lightPower', power);
     console.log("lightPower called");
+    console.log(timersArray)
+    console.log(waterLevelArray)
 }
 
 function waterPumpPower(power) {
