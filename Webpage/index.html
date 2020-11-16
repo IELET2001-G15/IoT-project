@@ -40,7 +40,7 @@
                     </div>
                     <div class="div1-btn-box">
                         <!--Button container (left side of the container (split in middle) with a white background)-->
-                        <div class="div1-btn" id="div1-btn-getdata" onclick="requestDataFromBoard(1000)">GET DATA</div>
+                        <div class="div1-btn" id="div1-btn-getdata" onclick="requestDataFromBoard('all', 1000)">GET DATA</div>
                         <!--The actual button with a green background. When you click this a functions is called-->
                         <!--requestDataFromBoard function starts data transfer from the ESP32 to the webpage-->
                     </div>
@@ -95,7 +95,7 @@
                         <!--Button container (right side of the container (split in middle) with a white background)-->
                         <div class="slidecontainer">
                             <h3>Control water flow from pump (0% - 100%):</h3> <br>
-                            <input type="range" min="1" max="100" value="0" class="slider" id="myRange" onchange="waterPumpPower(this.value)">
+                            <input type="range" min="0" max="255" value="0" class="slider" id="myRange" onchange="waterPumpPower(this.value)">
                         </div>
                     </div>
                 </div>
@@ -178,7 +178,7 @@
     <!-- Implements the realtime database-->
 
     <!--These scripts you can alter. They provide functionality/functions and are not libraries. View their purpose as splitting up your Arduino code in to different files for organization-->
-    <script src="script/server_no_encrypt.js"></script>
+
 
     <script src="script/script.js"></script>
 

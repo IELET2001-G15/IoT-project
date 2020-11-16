@@ -11,19 +11,21 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
+#include <ESP32Servo.h>
 
 AnalogIO waterLevelSensor(35, INPUT);
 AnalogIO soilHygrometer(32, INPUT);
 AnalogIO waterPump(33, OUTPUT);
 AnalogIO light(25, OUTPUT);
 
-Adafruit_BME280 bme;
 WiFiMulti WiFiMulti;
 SocketIoClient webSocket;
+Adafruit_BME280 bme;
+Servo servo;
 
 const char* g_SSID = "G6_9463";
 const char* g_PASS = "UrteneEr100%Torre";
-const char* g_IP = "192.168.137.145";
+const char* g_IP = "192.168.137.151";
 const uint16_t g_PORT = 2520;
 
 /**
@@ -41,38 +43,49 @@ void send(const char* identifier, const char* format, uint16_t value) {
 
 /**
  * Handles event when server requests data and sends the data to server
- * @param payload the message from the server
+ * @param identifier the message from the server
  * @param length the size of the message
 */
-void sendWaterLevelData(const char* payload, size_t length) {
-    send("waterLevelSensor", "%d", waterLevelSensor.read());
-}
-
-void sendSoilHumidityData(const char* payload, size_t length) {
-    send("soilHygrometer", "%d", soilHygrometer.read());
-}
-
-void sendTemperatureData(const char* payload, size_t length) {
-    send("temperature", "%f", bme.readTemperature());
-}
-
-void sendAirHumidityData(const char* payload, size_t length) {
-    send("airHumidity", "%f", bme.readHumidity());
+void sendData(const char* identifier, size_t length) {
+    if (identifier == "temperature") {
+        send("temperature", "%f", bme.readTemperature());
+    } else if (identifier == "airHumidity") {
+        send("airHumidity", "%f", bme.readHumidity());
+    } else if (identifier == "soilHumidity") {
+        send("soilHumidity", "%d", soilHygrometer.read());
+    } else if (identifier == "waterLevel") {
+        send("waterLevel", "%d", waterLevelSensor.read());
+    } else {
+        send("temperature", "%f", bme.readTemperature());
+        send("airHumidity", "%f", bme.readHumidity());
+        send("soilHumidity", "%d", soilHygrometer.read());
+        send("waterLevel", "%d", waterLevelSensor.read());
+    }
 }
 
 /**
  * Handles event when server sends data and changes outputs accordingly
- * @param powerLevelData the message from the server
+ * @param level the message from the server
  * @param length the size of the message
 */
-void changeWaterPumpPower(const char* powerLevelData, size_t length) {
-    Serial.printf("Set to [%s]\n", powerLevelData);
-    waterPump.write(atoi(powerLevelData));
+void changeWaterPumpPower(const char* level, size_t length) {
+    Serial.printf("Set to [%s]\n", level);
+    waterPump.write(atoi(level));
 }
 
-void changeLightPower(const char* powerLevelData, size_t length) {
-    Serial.printf("Set to [%s]\n", powerLevelData);
-    light.write(atoi(powerLevelData));
+void changeLightPower(const char* level, size_t length) {
+    Serial.printf("Set to [%s]\n", level);
+    light.write(atoi(level));
+}
+
+/**
+ * Handles event when server asks for change in vent opening
+ * @param angle the angle the servo-motor should turn
+ * @param length the size of the message
+*/
+void changeVentAngle(const char* angle, size_t length) {
+    Serial.printf("Set to [%s]\n", angle);
+    servo.write(atoi(angle));
 }
 
 /**
@@ -80,8 +93,8 @@ void changeLightPower(const char* powerLevelData, size_t length) {
  * @param payload the message from containing client ID and IP
  * @param length the size of the message
 */
-void event(const char* payload, size_t length) {
-    Serial.printf("ID, IP: %s", payload);
+void clientConnected(const char* payload, size_t length) {
+    Serial.printf("ID, IP: %s\n", payload);
 }
 
 /**
@@ -89,11 +102,13 @@ void event(const char* payload, size_t length) {
  * the server can trigger
 */
 void setup() {
-    bme.begin(); 
+    bme.begin();
+    
+    servo.setPeriodHertz(50);
+    servo.attach(16, 1000, 2000);
 
     Serial.begin(9600);
     Serial.setDebugOutput(true); //Set debug to true (during ESP32 booting)
-    Serial.print("\n\n\n");
 
     for (uint8_t t = 4; t > 0; t--) {
         Serial.printf("[SETUP] BOOT WAIT %d...\n", t);
@@ -107,13 +122,11 @@ void setup() {
     while (WiFiMulti.run() != WL_CONNECTED) Serial.print('.');
     Serial.print("\nConnected to WiFi successfully!\n\n\n");
 
-    webSocket.on("clientConnected", event);
-    webSocket.on("getWaterLevelData", sendWaterLevelData);
-    webSocket.on("getSoilHygrometerData", sendSoilHumidityData);
-     webSocket.on("getTemperatureData", sendTemperatureData);
-    webSocket.on("getAirHumidityData", sendAirHumidityData);
+    webSocket.on("clientConnected", clientConnected);
+    webSocket.on("sendData", sendData);
     webSocket.on("changeLightPower", changeLightPower);
     webSocket.on("changeWaterPumpPower", changeWaterPumpPower);
+    webSocket.on("changeVentAngle", changeVentAngle);
 
     webSocket.begin(g_IP, g_PORT);
 }
