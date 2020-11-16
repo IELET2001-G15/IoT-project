@@ -55,10 +55,15 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         console.log('user ' + clientID + ' changed the water pump power to [%]: ' + power);
     });
 
+    socket.on('ventAngle', function(angle) {
+        io.emit('changeVentAngle', angle);
+        console.log('user ' + clientID + ' changed the vent angle to [deg]: ' + angle);
+    });
+
     /**#####################################################################################
      *
      */
-
+    var interval = 1000;
     var timers = []; //Stores all our timers
     //Read data from board section
 
@@ -66,17 +71,13 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
      * Request data from ESP
      */
 
-    socket.on('waterLevelData', function(interval) { // Receives from webpage
-        console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-        if(interval > 99) {
-            timers.push(
-                setInterval(function(){
-                    io.emit('getWaterLevelData', 0); // Sends to ESP
-                }, interval)
-            );
-        } else {
-            console.log("too short time interval");
-        }
+    socket.on('requestDataFromBoard', function(request) { // Receives from webpage
+        console.log('user ' + clientID + ' requested ' + request + ' data with interval [ms]: ' + interval);
+        timers.push(
+            setInterval(function(){
+                io.emit('sendData', request);
+            }, interval)
+        );
     });
 
     socket.on('stopDataFromBoard', function() { //This function stops all the timers set by a user so that data will no longer be sent to the webpage
@@ -86,120 +87,52 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         }
     });
 
+    socket.on('changeInterval', function(newInterval) {
+        interval = newInterval;
+        console.log('user ' + clientID + ' changed the interval to [ms]: ' + newInterval);
+    });
+
 
     /**#####################################################################################
      * Send data to web page
      */
 
-    socket.on('waterLevelSensor', function(data) { //This is function that actually receives the data. The earlier one only starts the function.
-        io.emit('graphWaterLevelSensor', data); //Everytime a "dataFromBoard" tag (with data) is sent to the server, "data" tag with the actual data is sent to all clients
-        io.emit('graphTimers', timers); //Everytime a "dataFromBoard" tag (with data) is sent to the server, "data" tag with the actual data is sent to all clients
-        //This means the webbrowser will receive the data, and can then graph it or similar.
+    socket.on('waterLevel', function(data) {
+        io.emit('graphWaterLevel', data);
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
 
+    socket.on('soilHumidity', function(data) {
+        io.emit('graphSoilHumidity', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
 
+    socket.on('airHumidity', function(data) {
+        io.emit('graphAirHumidity', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
 
+    socket.on('temperature', function(data) {
+        io.emit('graphTemperature', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
 
+    socket.on('CO2', function(data) {
+        io.emit('graphCO2', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
+
+    socket.on('pH', function(data) {
+        io.emit('graphpH', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
+
+    socket.on('lux', function(data) {
+        io.emit('graphLux', data);
+        console.log('user ' + clientID + ' gained the data: ' + data);
+    });
 });
 
 
 
 
-
-
-/*
-
-socket.on('soilHygrometerData', function(interval) {
-    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-    if(interval > 99) {
-        timers.push(
-            setInterval(function(){
-                io.emit('getSoilHygrometerData', 0);
-            }, interval)
-        );
-    } else {
-        console.log("too short timeintervall");
-    }
-});
-
-socket.on('temperatureData', function(interval) {
-    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-    if(interval > 99) {
-        timers.push(
-            setInterval(function(){
-                io.emit('getTemperatureData', 0);
-            }, interval)
-        );
-    } else {
-        console.log("too short timeintervall");
-    }
-});
-
-socket.on('co2Data', function(interval) {
-    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-    if(interval > 99) {
-        timers.push(
-            setInterval(function(){
-                io.emit('getCO2Data', 0);
-            }, interval)
-        );
-    } else {
-        console.log("too short timeintervall");
-    }
-});
-
-socket.on('pHData', function(interval) {
-    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-    if(interval > 99) {
-        timers.push(
-            setInterval(function(){
-                io.emit('getPHData', 0);
-            }, interval)
-        );
-    } else {
-        console.log("too short timeintervall");
-    }
-});
-
-socket.on('lightData', function(interval) {
-    console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-    if(interval > 99) {
-        timers.push(
-            setInterval(function(){
-                io.emit('getLightData', 0);
-            }, interval)
-        );
-    } else {
-        console.log("too short timeintervall");
-    }
-});
-
-
-
-
-    socket.on('soilHygrometer', function(data) {
-        io.emit('graphSoilHygrometer', data);
-        console.log('user ' + clientID + ' gained the data: ' + data);
-    });
-
-    socket.on('temperatureSensor', function(data) {
-        io.emit('graphTemperatureSensor', data);
-        console.log('user ' + clientID + ' gained the data: ' + data);
-    });
-
-    socket.on('CO2Sensor', function(data) {
-        io.emit('graphCO2Sensor', data);
-        console.log('user ' + clientID + ' gained the data: ' + data);
-    });
-
-    socket.on('pHSensor', function(data) {
-        io.emit('graphPHSensor', data);
-        console.log('user ' + clientID + ' gained the data: ' + data);
-    });
-
-    socket.on('lightSensor', function(data) {
-        io.emit('graphLightSensor', data);
-        console.log('user ' + clientID + ' gained the data: ' + data);
-    });
- */

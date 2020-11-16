@@ -43,26 +43,9 @@ void send(const char* identifier, const char* format, uint16_t value) {
 
 /**
  * Handles event when server requests data and sends the data to server
- * @param payload the message from the server
+ * @param identifier the message from the server
  * @param length the size of the message
 */
-void sendWaterLevel(const char* payload, size_t length) {
-    send("waterLevelSensor", "%d", waterLevelSensor.read());
-}
-
-void sendSoilHumidity(const char* payload, size_t length) {
-    send("soilHygrometer", "%d", soilHygrometer.read());
-}
-
-void sendTemperature(const char* payload, size_t length) {
-    send("temperature", "%f", bme.readTemperature());
-}
-
-void sendAirHumidity(const char* payload, size_t length) {
-    send("airHumidity", "%f", bme.readHumidity());
-}
-
-/*
 void sendData(const char* identifier, size_t length) {
     switch (identifier) {
         case "temperature": 
@@ -80,7 +63,6 @@ void sendData(const char* identifier, size_t length) {
             send("waterLevel", "%d", waterLevelSensor.read());
     }
 }
-*/
 
 /**
  * Handles event when server sends data and changes outputs accordingly
@@ -102,7 +84,8 @@ void changeLightPower(const char* level, size_t length) {
  * @param angle the angle the servo-motor should turn
  * @param length the size of the message
 */
-void openVent(const char* angle, size_t length) {
+void changeVentAngle(const char* angle, size_t length) {
+    Serial.printf("Set to [%s]\n", angle);
     servo.write(atoi(angle));
 }
 
@@ -142,14 +125,10 @@ void setup() {
     Serial.print("\nConnected to WiFi successfully!\n\n\n");
 
     webSocket.on("clientConnected", clientConnected);
-    //webSocket.on("sendData", sendData);
-    webSocket.on("getWaterLevelData", sendWaterLevel);
-    webSocket.on("getSoilHygrometerData", sendSoilHumidity);
-    webSocket.on("sendTemperature", sendTemperature);
-    webSocket.on("sendAirHumidity", sendAirHumidity);
+    webSocket.on("sendData", sendData);
     webSocket.on("changeLightPower", changeLightPower);
     webSocket.on("changeWaterPumpPower", changeWaterPumpPower);
-    webSocket.on("openVent", openVent);
+    webSocket.on("changeVentAngle", changeVentAngle);
 
     webSocket.begin(g_IP, g_PORT);
 }
