@@ -1,5 +1,7 @@
 // Graph live data
 
+var runData = false;
+
 var waterLevelArray = [];
 var airHumidityArray = [];
 var soilHumidityArray = [];
@@ -7,9 +9,7 @@ var temperatureArray = [];
 var luxArray = [];
 var CO2Array = [];
 var pHArray = [];
-
 var waterPumpPowerArray = [];
-
 var timeArray = [];
 
 var allData = [waterLevelArray, waterPumpPowerArray, 
@@ -31,4 +31,15 @@ function updateTime() {
     var minutes = new Date().getMinutes();
     var currentTime = hours + ":" + minutes;
     timeArray.push(currentTime);
+}
+
+
+var overflow = 1000;
+
+function avoidArrayOverflow() {
+    for (var i in allData){
+        if (allData[i].length <= overflow){
+            allData[i].shift();
+        }
+    }
 }

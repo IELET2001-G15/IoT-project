@@ -328,8 +328,12 @@ input:checked + #div2-switch:before {
 .div4-txt-box {
     display: flex;
     background-color: white;
-    line-height: 150%;
+    line-height: 140%;
     align-items: center;
+    font-size: 15px;
+    font-size: 1.25vw;
+
+
 
 }
 

@@ -65,13 +65,18 @@ function ventAngle(angle) {
 //#####################################################################################################
 
 function requestDataFromBoard(request, interval) {
-    clearTimeout(timer);
-    changeInterval(interval);
-    socket.emit('requestDataFromBoard', request);
-    console.log('requestDataFropushd was called with request: ' + request);
+    runData = true;
+
+    if(runData == true){
+        clearTimeout(timer);
+        changeInterval(interval);
+        socket.emit('requestDataFromBoard', request);
+        console.log('requestDataFropushd was called with request: ' + request);
+    }
 }
 
 function stopDataFromBoard() {
+    runData = false;
     clearTimeout(timer);
     socket.emit('stopDataFromBoard');
     console.log("stopDataFromBoard was called");
