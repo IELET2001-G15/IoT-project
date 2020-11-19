@@ -2,7 +2,7 @@
  * AnalogIO.cpp - Library for reading and writing to ESP32 pins.
  * Created by Espen Holsen, November 14, 2020.
  * Released into the public domain.
-*/
+ */
 
 #include <Arduino.h>
 #include <analogWrite.h>
