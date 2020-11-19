@@ -1,6 +1,5 @@
 var socket = io.connect('192.168.137.151:2520', {secure: false});
 
-var interval = 1000;
 var timer;
 
 socket.on('clientConnected', function(id, ip) {
@@ -65,24 +64,18 @@ function ventAngle(angle) {
 //#####################################################################################################
 
 function requestDataFromBoard(request, interval) {
-    changeInterval(interval);
-    socket.emit('requestDataFromBoard', request);
-    console.log('requestDataFropushd was called with request: ' + request);
+    clearInterval(timer);
+    timer = setInterval(function() {
+        myLineChart.update();
+        printDataValues();
+        updateTime();
+    }, interval);
+    socket.emit('requestDataFromBoard', request, interval);
+    console.log('requestDataFromBoard was called with request/interval [ms]: ' + request + '/' + interval);
 }
 
 function stopDataFromBoard() {
     clearInterval(timer);
     socket.emit('stopDataFromBoard');
     console.log("stopDataFromBoard was called");
-}
-
-function changeInterval(interval) {
-    clearInterval(timer);
-    timer = setInterval(function() {
-                myLineChart.update();
-                printDataValues();
-                updateTime();
-            }, interval);
-    socket.emit('changeInterval', interval);
-    console.log('changeInterval was called with newInterval [ms]: ' + interval);
 }

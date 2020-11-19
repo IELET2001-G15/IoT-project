@@ -26,7 +26,6 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
 
     io.emit("clientConnected", clientID, IPArr[3]); //Now we can use our custom defined "on connection" function to tell the client its ID and IP-address
 
-    var interval = 1000;
     var timer;
 
     client.on('disconnect', function() {
@@ -57,7 +56,7 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
      * Request data from ESP
      */
 
-    socket.on('requestDataFromBoard', function(request) { // Receives from webpage
+    socket.on('requestDataFromBoard', function(request, interval) { // Receives from webpage
         clearInterval(timer);
         timer = setInterval(function() {
                     io.emit('sendData', request);
@@ -69,12 +68,6 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
         clearInterval(timer);
         console.log('user ' + clientID + ' cleared data request interval');
     });
-
-    socket.on('changeInterval', function(newInterval) {
-        interval = newInterval;
-        console.log('user ' + clientID + ' changed the interval to [ms]: ' + newInterval);
-    });
-
 
     /**#####################################################################################
      * Send data to web page
