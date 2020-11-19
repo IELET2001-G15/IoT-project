@@ -1,5 +1,4 @@
 // Graph live data
-
 var waterLevelArray = [];
 var airHumidityArray = [];
 var soilHumidityArray = [];
@@ -7,9 +6,7 @@ var temperatureArray = [];
 var luxArray = [];
 var CO2Array = [];
 var pHArray = [];
-
 var waterPumpPowerArray = [];
-
 var timeArray = [];
 
 var allData = [waterLevelArray, waterPumpPowerArray, 
@@ -31,4 +28,15 @@ function updateTime() {
     var minutes = new Date().getMinutes();
     var currentTime = hours + ":" + minutes;
     timeArray.push(currentTime);
+}
+
+
+var overflow = 1000;
+
+function avoidArrayOverflow() { //We must remember to include timeArray in this function
+    for (var i in allData){     //Suggestion: Include timeArray in allData, and display time in live data table
+        if (allData[i].length <= overflow){
+            allData[i].shift();
+        }
+    }
 }

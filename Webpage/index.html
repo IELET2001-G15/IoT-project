@@ -83,6 +83,12 @@
                         <!--changeLEDState function stops data transfer from the ESP32 to the webpage-->
                     </div>
                     <div class="div2-btn-box" id="div2-btn-box-u2">
+                        <h3>Close/Open House </h3>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span id="div2-switch"></span>
+                        </label>
+
                         <!--Button container (right side of the container (split in middle) with a white background)-->
                     </div>
                     <div class="div2-btn-box" id="div2-btn-box-d1">
@@ -119,16 +125,19 @@
                         <p>
                             &nbsp;&nbsp;&nbsp;Water pump power [%]:<br>
                             &nbsp;&nbsp;&nbsp;Water level [mm]:<br>
-                            &nbsp;&nbsp;&nbsp;Soil Hygrometer:<br>
+                            &nbsp;&nbsp;&nbsp;Soil hygrometer:<br>
                             &nbsp;&nbsp;&nbsp;Light sensitivity:<br>
                             &nbsp;&nbsp;&nbsp;Temperature [ºC]:<br>
                             &nbsp;&nbsp;&nbsp;CO2:<br>
                             &nbsp;&nbsp;&nbsp;pH:<br>
+                            &nbsp;&nbsp;&nbsp;Air humidty:<br>
+
                         </p>
                     </div>
 
                     <div class="div4-txt-box" id="div4-txt-data">
                         <p id="dataValues">
+                            N/A<br>
                             N/A<br>
                             N/A<br>
                             N/A<br>
@@ -148,6 +157,8 @@
                             &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
                             &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
                             &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
+                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
+
                         </p>
                     </div>
                 </div>
@@ -174,7 +185,10 @@
     <!--These scripts you can alter. They provide functionality/functions and are not libraries. View their purpose as splitting up your Arduino code in to different files for organization-->
 
 
-    <script src="script/script.js"></script>
+    <script src="script/script.js">
+
+    </script>
+
 
     <script src="script/chartoperation.js"></script>
     <!--This allow yo to change how the graph works, how many graphs, colors, titles etc.-->
