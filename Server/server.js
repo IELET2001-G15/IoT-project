@@ -30,7 +30,7 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
     var timer;
 
     client.on('disconnect', function() {
-        clearTimeout(timer);
+        clearInterval(timer);
         console.log("user " + clientID + " disconnected, stopping timers if any");
     });
 
@@ -58,6 +58,7 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
      */
 
     socket.on('requestDataFromBoard', function(request) { // Receives from webpage
+        clearInterval(timer);
         timer = setInterval(function() {
                     io.emit('sendData', request);
                 }, interval);
@@ -65,7 +66,7 @@ io.on('connection', function(socket){ //This is the server part of the "what hap
     });
 
     socket.on('stopDataFromBoard', function() {
-        clearTimeout(timer);
+        clearInterval(timer);
         console.log('user ' + clientID + ' cleared data request interval');
     });
 
