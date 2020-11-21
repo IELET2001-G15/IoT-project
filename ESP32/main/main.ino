@@ -15,7 +15,7 @@
 #include <ESP32Servo.h>
 
 AnalogIO waterLevel(35, INPUT);
-AnalogIO soilHumidity(32, INPUT);
+AnalogIO soilHumidity(26, INPUT);
 AnalogIO waterPump(33, OUTPUT);
 AnalogIO light(25, OUTPUT);
 SparkFun_Ambient_Light veml(0x48);
