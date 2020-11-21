@@ -1,0 +1,8 @@
+unit Click_AirQuality3_config;
+
+uses Click_AirQuality3_types;
+
+const
+    _ARIQ3_I2C_CFG : array[1] of uint32_t = (_I2C_BITRATE_STANDARD_MODE); 
+    
+end.

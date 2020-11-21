@@ -11,19 +11,19 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
-#include <Adafruit_VL6180X.h>
+#include <SparkFun_VEML6030_Ambient_Light_Sensor.h>
 #include <ESP32Servo.h>
 
 AnalogIO waterLevel(35, INPUT);
 AnalogIO soilHumidity(32, INPUT);
 AnalogIO waterPump(33, OUTPUT);
 AnalogIO light(25, OUTPUT);
+SparkFun_Ambient_Light veml(0x48);
+Adafruit_BME280 bme;
+Servo servo;
 
 WiFiMulti WiFiMulti;
 SocketIoClient webSocket;
-Adafruit_BME280 bme;
-Adafruit_VL6180X vl;
-Servo servo;
 
 const char* g_SSID = "G6_9463";
 const char* g_PASS = "UrteneEr100%Torre";
@@ -58,13 +58,13 @@ void sendData(const char* identifier, size_t length) {
     } else if (identifier == "waterLevel") {
         send("waterLevel", "%d", waterLevel.read());
     } else if (identifier == "lux") {
-        send("lux", "%f", vl.readLux(VL6180X_ALS_GAIN_5));
+        send("lux", "%f", veml.readLight());
     } else if (identifier == "all") {
         send("temperature", "%f", bme.readTemperature());
         send("airHumidity", "%f", bme.readHumidity());
         send("soilHumidity", "%d", soilHumidity.read());
         send("waterLevel", "%d", waterLevel.read());
-        send("lux", "%f", vl.readLux(VL6180X_ALS_GAIN_5));
+        send("lux", "%f", veml.readLight());
     } else {
         Serial.printf("[ERROR] Could not find sensor with identifier: %s\n", identifier);
     }
@@ -132,8 +132,11 @@ void setup() {
 
     webSocket.begin(g_IP, g_PORT);
 
+    Wire.begin();
     bme.begin();
-    vl.begin();
+    veml.begin();
+    veml.setGain(0.125);
+    veml.setIntegTime(100);
     servo.setPeriodHertz(50);
     servo.attach(16, 1000, 2000);
 }
