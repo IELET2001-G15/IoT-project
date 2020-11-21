@@ -11,7 +11,7 @@ var timeArray = [];
 
 var allData = [waterLevelArray, waterPumpPowerArray, 
                soilHumidityArray, luxArray, temperatureArray, 
-               CO2Array, pHArray, airHumidityArray];
+               CO2Array, pHArray, airHumidityArray, timeArray];
 
 function printDataValues(){
     var printstr = "";

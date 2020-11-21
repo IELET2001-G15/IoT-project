@@ -38,7 +38,7 @@ const uint16_t g_PORT = 2520;
  * @param value the number to be formated as a string and sent to server
  */
 void send(const char* identifier, const char* format, uint16_t value) {
-    char buffer[10];
+    char buffer[33];
     sprintf(buffer, format, value);
     webSocket.emit(identifier, buffer);
 }
