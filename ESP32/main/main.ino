@@ -49,17 +49,17 @@ void send(const char* identifier, const char* format, uint16_t value) {
  * @param length the size of the message
  */
 void sendData(const char* identifier, size_t length) {
-    if (identifier == "temperature") {
+    if (!strcmp(identifier, "temperature")) {
         send("temperature", "%f", bme.readTemperature());
-    } else if (identifier == "airHumidity") {
+    } else if (!strcmp(identifier, "airHumidity")) {
         send("airHumidity", "%f", bme.readHumidity());
-    } else if (identifier == "soilHumidity") {
+    } else if (!strcmp(identifier, "soilHumidity")) {
         send("soilHumidity", "%d", soilHumidity.read());
-    } else if (identifier == "waterLevel") {
+    } else if (!strcmp(identifier, "waterLevel")) {
         send("waterLevel", "%d", waterLevel.read());
-    } else if (identifier == "lux") {
+    } else if (!strcmp(identifier, "lux")) {
         send("lux", "%f", veml.readLight());
-    } else if (identifier == "all") {
+    } else if (!strcmp(identifier, "all")) {
         send("temperature", "%f", bme.readTemperature());
         send("airHumidity", "%f", bme.readHumidity());
         send("soilHumidity", "%d", soilHumidity.read());
