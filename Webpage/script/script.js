@@ -19,7 +19,7 @@ function printDataValues(){
         var lastValue = allData[i].length - 1;
         if (allData[i][0] !== undefined){
             printstr += allData[i][lastValue];
-        } else{
+        } else {
             printstr += "N/A";
         }
         printstr += "<br>";
@@ -34,9 +34,8 @@ function updateTime() {
     timeArray.push(currentTime);
 }
 
-
 function avoidArrayOverflow() { //We must remember to include timeArray in this function
-    const limit = 100;
+    const limit = 30;
 
     for (var i in allData){     //Suggestion: Include timeArray in allData, and display time in live data table
         if (allData[i].length >= limit){
