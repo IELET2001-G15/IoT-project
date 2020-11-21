@@ -66,6 +66,7 @@ function ventAngle(angle) {
 function requestDataFromBoard(request, interval) {
     clearInterval(timer);
     timer = setInterval(function() {
+        avoidArrayOverflow();
         myLineChart.update();
         printDataValues();
         updateTime();
