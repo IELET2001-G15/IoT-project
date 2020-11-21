@@ -32,7 +32,7 @@ function updateTime() {
 
 function avoidArrayOverflow() { //We must remember to include timeArray in this function
     for (var i in allData){     //Suggestion: Include timeArray in allData, and display time in live data table
-        if (allData[i].length <= 100){
+        if (allData[i].length >= 100){
             allData[i][0].shift();
         }
     }
