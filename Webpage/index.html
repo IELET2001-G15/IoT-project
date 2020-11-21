@@ -34,15 +34,10 @@
                 <div class="btn-container dragElement">
                     <!--Here the dragElement is the entire box-->
                     <div class="btn-title-con dragBox">
-                        <!--But one can only start to drag it if one clicks on the top-box where the title is -->
                         <h2 class="btn-title">GET DATA BUTTONS</h2>
-                        <!--Title in the title-box-->
                     </div>
                     <div class="div1-btn-box">
-                        <!--Button container (left side of the container (split in middle) with a white background)-->
                         <div class="div1-btn" id="div1-btn-getdata" onclick="requestDataFromBoard('all', 1000)">GET DATA</div>
-                        <!--The actual button with a green background. When you click this a functions is called-->
-                        <!--requestDataFromBoard function starts data transfer from the ESP32 to the webpage-->
                     </div>
                     <div class="div1-btn-box">
                         <!--Button container (right side of the container (split in middle) with a white background)-->
@@ -67,7 +62,7 @@
                     <!--Here the dragElement is the entire box-->
                     <div class="btn-title-con dragBox">
                         <!--But one can only start to drag it if one clicks on the top-box where the title is -->
-                        <h2 class="btn-title">MANUAL CONTROL PANEL</h2>
+                        <h2 class="btn-title">MANUAL CONTROL PANEL on</h2>
                         <!--Title in the title-box-->
                     </div>
 
@@ -83,9 +78,9 @@
                         <!--changeLEDState function stops data transfer from the ESP32 to the webpage-->
                     </div>
                     <div class="div2-btn-box" id="div2-btn-box-u2">
-                        <h3>Close/Open House </h3>
+                        <h3>Close/Open Vent &nbsp;</h3>
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" id="ventStatusValue" onclick="ventStatus()">
                             <span id="div2-switch"></span>
                         </label>
 
@@ -123,8 +118,8 @@
 
                     <div class="div4-txt-box" id="div4-txt-variable">
                         <p>
-                            &nbsp;&nbsp;&nbsp;Water pump power [%]:<br>
                             &nbsp;&nbsp;&nbsp;Water level [mm]:<br>
+                            &nbsp;&nbsp;&nbsp;Water pump power [%]:<br>
                             &nbsp;&nbsp;&nbsp;Soil hygrometer:<br>
                             &nbsp;&nbsp;&nbsp;Light sensitivity:<br>
                             &nbsp;&nbsp;&nbsp;Temperature [ºC]:<br>

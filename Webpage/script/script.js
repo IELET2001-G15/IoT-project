@@ -11,13 +11,17 @@ var timeArray = [];
 
 var allData = [waterLevelArray, waterPumpPowerArray, 
                soilHumidityArray, luxArray, temperatureArray, 
-               CO2Array, pHArray, airHumidityArray, timeArray];
+               CO2Array, pHArray, airHumidityArray];
 
 function printDataValues(){
     var printstr = "";
     for (var i in allData){
         var lastValue = allData[i].length - 1;
-        printstr += allData[i][lastValue];
+        if (allData[i][0] !== undefined){
+            printstr += allData[i][lastValue];
+        } else{
+            printstr += "N/A";
+        }
         printstr += "<br>";
     }
     document.getElementById("dataValues").innerHTML = printstr;
@@ -30,10 +34,25 @@ function updateTime() {
     timeArray.push(currentTime);
 }
 
+
 function avoidArrayOverflow() { //We must remember to include timeArray in this function
+    const limit = 100;
+
     for (var i in allData){     //Suggestion: Include timeArray in allData, and display time in live data table
-        if (allData[i].length >= 100){
+        if (allData[i].length >= limit){
             allData[i].shift();
         }
     }
+
+    if (timeArray >= limit){
+        timeArray.shift();
+    }
+}
+
+function ventStatus(){
+    var ventAngleDeg = 30;
+
+    var test123 = document.getElementById("ventStatusValue");
+    console.log(test123);
+
 }
