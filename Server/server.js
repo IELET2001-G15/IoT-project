@@ -84,7 +84,7 @@ function getTimeAsString() {
 var regKey = "passord"; //This can be set to whatever you want, and it should probably be more secure than "password"
 
 io.on('connection', function(socket) { //This is the server part of the "what happens when we first connect" function. Everytime a user connects a instance of this is set up for the user privatley
-    var regUID = 0; 
+    var regUID = 1;
     var clientID = socket.id;
     var client = io.sockets.connected[clientID];
     var clientIPRAW = client.request.connection.remoteAddress;
@@ -103,13 +103,11 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
      */
 
     client.on('disconnect', function(){ //This function is called for a client when the client is disconnected. The server can then do something even tough the client is disconnected
-        clearInterval(timer);
-        console.log("user " + clientID + " disconnected, stopping timers if any");
-
         //When the user disconnects we want to log and store this in the database
         if(regUID != undefined && regUID != "" && regUID != 0) { //This checks that the user is logged in via the regUID
-
-            stopListeningForData(); //Stop client data stream, new database entries will not be sent to the socket client
+            clearInterval(timer);
+            console.log("user " + clientID + " disconnected, stopping timers if any");
+            stopListeningForData();
 
             var currentDate = getDateAsString(); //Get the date
             var currentTime = getTimeAsString(); //Get the time
