@@ -84,13 +84,14 @@ function getTimeAsString() {
 var regKey = "passord"; //This can be set to whatever you want, and it should probably be more secure than "password"
 
 io.on('connection', function(socket) { //This is the server part of the "what happens when we first connect" function. Everytime a user connects a instance of this is set up for the user privatley
-    var regUID = 1;
+    console.log('a user connected');
+    var regUID = 0;
     var clientID = socket.id;
     var client = io.sockets.connected[clientID];
     var clientIPRAW = client.request.connection.remoteAddress;
     var IPArr = clientIPRAW.split(":",4);
 
-    console.log('a user connected');
+
     console.log("User ID: " + clientID);
     console.log("User IP: " + IPArr[3]);
 
@@ -134,7 +135,7 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
             for (var i = 0; i < username_arr.length; i++) { //We for loop trough the arrays of username and password declared earlier
 
                 if(username == username_arr[i]) { //If the username sent from the webpage matches or not
-                    if (password == password_arr[i]){ //If the password matches should the username alsp match
+                    if (password == password_arr[i]){ //If the password matches should the username also match
                         console.log("Username and password matches");
                         auth = true; //We set the global auth to true, this now means that this current client/user can call any other functions
                         client.emit('authState', 1); //Tells the client that it has been authenticated
