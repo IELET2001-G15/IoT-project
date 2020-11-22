@@ -19,7 +19,7 @@ server.listen(serverPort, function() {
 });
 
 //We configure the firebase admin to connect to our database with admin credentials
-var serviceAccount = require("ielet2001-firebase-adminsdk.json"); //This is our admin "password" file (it is a file and it is located in a folder)
+var serviceAccount = require("./ielet2001-firebase-adminsdk.json"); //This is our admin "password" file (it is a file and it is located in a folder)
 var fAdmin = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://ielet2001.firebaseio.com/" //This is the link to our database, this and the password file has to be specified by you
@@ -103,11 +103,8 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
      */
 
     client.on('disconnect', function(){ //This function is called for a client when the client is disconnected. The server can then do something even tough the client is disconnected
+        clearInterval(timer);
         console.log("user " + clientID + " disconnected, stopping timers if any");
-
-        for (var i = 0; i < timers.length; i++) {//clear timer if user disconnects
-            clearTimeout(timers[i]); //Cleartimer is the same as stopping the timer, in this case we clear all possible timers previously set
-        }
 
         //When the user disconnects we want to log and store this in the database
         if(regUID != undefined && regUID != "" && regUID != 0) { //This checks that the user is logged in via the regUID
@@ -308,19 +305,12 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
      */
 
     socket.on('requestDataFromBoard', function(request, interval) { // Receives from webpage
-        clearInterval(timer);
         if(regUID != undefined && regUID != "" && regUID != 0) { //Check if the user is authenticated
-            console.log('user ' + clientID + ' requested data with interval (ms): ' + interval);
-
-            if (interval > 99) { //if the timeinterval is not more than 100ms it does not allow it to start
-                timers.push( //If an actual argument is given (a time period) it starts the timer and periodically calls the function
-                    setInterval(function () { //If an actual argument is given (a time period) it starts the timer and periodically calls the function
-                        io.emit('sendData', request); //Send "dataRequest" command/function to all ESP32's
-                    }, interval)
-                );
-            } else {
-                console.log("Too short timeintervall");
-            }
+            clearInterval(timer);
+            timer = setInterval(function() {
+                io.emit('sendData', request);
+            }, interval);
+            console.log('user ' + clientID + ' requested ' + request + ' data with interval [ms]: ' + interval);
 
         } else {
             console.log("User is not authenticated");
@@ -333,7 +323,6 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
      */
 
     socket.on('stopDataFromBoard', function() { //This function stops all the timers set by a user so that data will no longer be sent to the webpage
-        clearInterval(timer);
         if(regUID != undefined && regUID != "" && regUID != 0) { //Check if the user is authenticated
             clearInterval(timer);
             console.log('user ' + clientID + ' cleared data request interval');
