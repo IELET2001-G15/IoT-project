@@ -55,3 +55,20 @@ function ventStatus(){
     console.log(test123);
 
 }
+
+function humidityConverter(data){
+    var newData = data*100/4095;
+    newData = Math.round(newData);
+    return newData
+}
+
+function waterPumpPowerPush(){
+    var powerValue = document.getElementById("myRange").value;
+    waterPumpPowerArray.push(powerValue);
+}
+
+function waterPumpPowerConverter(data){
+    var newData = data*255/100;
+    newData = Math.round(newData);
+    return newData;
+}

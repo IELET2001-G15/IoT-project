@@ -16,7 +16,8 @@ socket.on('pushWaterLevel', function(data) {
 
 socket.on('pushSoilHumidity', function(data) {
     console.log('Soil humidity data was received: ' + data);
-    soilHumidityArray.push(Number(data));
+    var newData = humidityConverter(data);
+    soilHumidityArray.push(Number(newData));
 });
 
 socket.on('pushAirHumidity', function(data) {
@@ -52,8 +53,9 @@ function lightPower(power) {
 }
 
 function waterPumpPower(power) {
-    socket.emit('waterPumpPower', power);
-    console.log('waterPumpPower was called with power [bits]: ' + power);
+    var newPower = waterPumpPowerConverter(power);
+    socket.emit('waterPumpPower', newPower);
+    console.log('waterPumpPower was called with power [bits]: ' + newPower);
 }
 
 function ventAngle(angle) {
@@ -66,6 +68,7 @@ function ventAngle(angle) {
 function requestDataFromBoard(request, interval) {
     clearInterval(timer);
     timer = setInterval(function() {
+        waterPumpPowerPush();
         avoidArrayOverflow();
         myLineChart.update();
         printDataValues();
