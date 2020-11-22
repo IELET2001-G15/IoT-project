@@ -50,10 +50,13 @@ function avoidArrayOverflow() { //We must remember to include timeArray in this 
 
 function ventStatus(){
     var ventAngleDeg = 30;
+    var ventStatus = document.getElementById("ventStatusValue").checked;
 
-    var test123 = document.getElementById("ventStatusValue");
-    console.log(test123);
-
+    if(ventStatus == true){
+        ventAngle(ventAngleDeg);
+    } else {
+        ventAngle(-ventAngleDeg);
+    }
 }
 
 function humidityConverter(data){

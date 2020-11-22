@@ -53,7 +53,7 @@ function lightPower(power) {
 }
 
 function waterPumpPower(power) {
-    var newPower = waterPumpPowerConverter(power);
+    var newPower = waterPumpPowerConverter(power); //convert from 0-100 to 0-255
     socket.emit('waterPumpPower', newPower);
     console.log('waterPumpPower was called with power [bits]: ' + newPower);
 }
