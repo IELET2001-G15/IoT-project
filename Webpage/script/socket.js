@@ -16,7 +16,8 @@ socket.on('pushWaterLevel', function(data) {
 
 socket.on('pushSoilHumidity', function(data) {
     console.log('Soil humidity data was received: ' + data);
-    soilHumidityArray.push(Number(data));
+    var newData = humidityConverter(data);
+    soilHumidityArray.push(Number(newData));
 });
 
 socket.on('pushAirHumidity', function(data) {
@@ -66,6 +67,7 @@ function ventAngle(angle) {
 function requestDataFromBoard(request, interval) {
     clearInterval(timer);
     timer = setInterval(function() {
+        waterPumpPowerPush();
         avoidArrayOverflow();
         myLineChart.update();
         printDataValues();
