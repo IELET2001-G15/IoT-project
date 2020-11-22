@@ -368,4 +368,26 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
         io.emit('pushLux', data);
         console.log('user ' + clientID + ' gained the data: ' + data);
     });
+
+
+    //One can also write normal functions inside the io.on connection
+    //This function sends new database data to the socket client (normally webpage) automatically
+    function sendDataToClient(snap) {
+        var value = snap.val(); //Data object from Firebase
+
+        var DataID = Object.keys(value)[0]; //Here we use a function that retrieves all the data keys (the ID of the data entry)
+        var data = value[DataID]; //Then we use the ID to retrieve the data from the JSON-array
+        console.log("Data: " + data);
+        client.emit('data', data); //We emit to the same listener on the webpage as in the earlier io.emit command ('data') in the dataFromBoard function
+    }
+
+    //This function starts the stream of data, everytime the dataFromBoard socket function saves data to the database it is detected here
+    function startListeningForData() {
+        db.ref('sensordata/' /* + regUID*/).limitToLast(1).on('child_added', sendDataToClient); //Sets up a detection for new data
+    }
+
+    //Stop the datastream from the database to the socket client (normally webpage)
+    function stopListeningForData() {
+        db.ref('sensordata/' /* + regUID*/).off('child_added', sendDataToClient); //Stops detection for new data
+    }
 });
