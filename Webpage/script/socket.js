@@ -53,8 +53,9 @@ function lightPower(power) {
 }
 
 function waterPumpPower(power) {
-    socket.emit('waterPumpPower', power);
-    console.log('waterPumpPower was called with power [bits]: ' + power);
+    var newPower = waterPumpPowerConverter(power);
+    socket.emit('waterPumpPower', newPower);
+    console.log('waterPumpPower was called with power [bits]: ' + newPower);
 }
 
 function ventAngle(angle) {

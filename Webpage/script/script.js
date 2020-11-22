@@ -68,7 +68,7 @@ function waterPumpPowerPush(){
 }
 
 function waterPumpPowerConverter(data){
-    var newData = data*100/255;
+    var newData = data*255/100;
     newData = Math.round(newData);
     return newData;
 }
