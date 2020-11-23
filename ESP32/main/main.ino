@@ -31,11 +31,11 @@ const char* g_IP = "192.168.137.151";
 const uint16_t g_PORT = 2520;
 
 /**
- * Formats a number to a string. For example 1234 becomes "1234". Change buffer size to 
+ * Formats arbitrary datatype to C-string. For example 1234 becomes "1234". Change buffer size to 
  * accomodate more digits
  * @param identifier the ID that the server will recognize
  * @param format the format of the string. For example "%d" for integer and "%f" for float
- * @param value the number to be formated as a string and sent to server
+ * @param value the value to be formated as a C-string and sent to server
  */
 template<typename T>
 void send(const char* identifier, const char* format, T value) {
