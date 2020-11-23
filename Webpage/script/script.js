@@ -13,6 +13,8 @@ var allData = [waterLevelArray, waterPumpPowerArray,
                soilHumidityArray, luxArray, temperatureArray, 
                CO2Array, pHArray, airHumidityArray];
 
+
+
 function printDataValues(){
     var printstr = "";
     for (var i in allData){
@@ -43,17 +45,20 @@ function avoidArrayOverflow() { //We must remember to include timeArray in this 
         }
     }
 
-    if (timeArray >= limit){
+    if (timeArray.length >= limit){
         timeArray.shift();
     }
 }
 
 function ventStatus(){
     var ventAngleDeg = 30;
+    var ventStatus = document.getElementById("ventStatusValue").checked;
 
-    var test123 = document.getElementById("ventStatusValue");
-    console.log(test123);
-
+    if(ventStatus == true){
+        ventAngle(ventAngleDeg);
+    } else {
+        ventAngle(-ventAngleDeg);
+    }
 }
 
 function humidityConverter(data){
