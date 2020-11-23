@@ -13,6 +13,8 @@ var allData = [waterLevelArray, waterPumpPowerArray,
                soilHumidityArray, luxArray, temperatureArray, 
                CO2Array, pHArray, airHumidityArray];
 
+
+
 function printDataValues(){
     var printstr = "";
     for (var i in allData){
@@ -43,7 +45,7 @@ function avoidArrayOverflow() { //We must remember to include timeArray in this 
         }
     }
 
-    if (timeArray >= limit){
+    if (timeArray.length >= limit){
         timeArray.shift();
     }
 }

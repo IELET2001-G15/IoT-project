@@ -35,7 +35,7 @@ var myLineChart = new Chart(ctx, { //Defines the graph
                 label: 'Soil', //Label of dataset/graph 1
                 data: soilHumidityArray, //The dataArray that actually stores the data
                 backgroundColor: [ //The background color of the graph (usually not in use)
-                    'rgb(84,207,96)'
+                    '#009A44'
                 ],
                 borderColor: [ //The border color of the graph (the color of the actual line)
                     'rgb(10,127,21)'

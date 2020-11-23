@@ -73,6 +73,8 @@ function requestDataFromBoard(request, interval) {
         myLineChart.update();
         printDataValues();
         updateTime();
+        console.log(waterPumpPowerArray.length)
+        console.log(timeArray.length)
     }, interval);
     socket.emit('requestDataFromBoard', request, interval);
     console.log('requestDataFromBoard was called with request/interval [ms]: ' + request + '/' + interval);
