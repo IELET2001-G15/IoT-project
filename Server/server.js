@@ -10,7 +10,8 @@ var serverPort = 2520;
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
-
+//These arrays are only used if we do not use Firebase
+//Since we use Firebase, register username and password in the Register-webpage
 var username_arr = ["test", "bruker1"];
 var password_arr = ["passord", "passord1"];
 
@@ -178,7 +179,7 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
 
             db.ref('users/').push( { //Create a new user in the user database
                 username: username,
-                password: password,
+                password: password
                 register_date: regDate,
                 is_active: 0,
                 last_active: regDate + "-" + currentTime,
