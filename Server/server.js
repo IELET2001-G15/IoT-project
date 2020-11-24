@@ -126,6 +126,7 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
     });
   
      //Socket authentication function
+     // NOT USING THE DATABASE!
      socket.on('auth', function(username, password) {
 
         if(username != undefined && password != undefined) { //Check to see that the entered username and password isnt empty
@@ -195,6 +196,7 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
     });
 
     //Authenticate a user on the controlpanel/client
+    //USING THE DATABASE!
     socket.on('authUser', function (username, password) { //One needs to call authUser with a username and password
         var data = db.ref('users').orderByChild('username').equalTo(username); //This is a firebase db query
         //We want to search the "users" database, and in that database we want to target on of the subfields called username
@@ -221,7 +223,7 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
                     regUID = UID; //Does it match we set the client-global variable regUID to the UID of the data entry. We call this ID the UserID (UID)
                     console.log(regUID);
                     client.emit("authSuccess", username); //Now we tell the client that it has successfully authenticated with the server
-
+                    client.emit("authState", 1);
                     startListeningForData(); //Start client data stream, everytime the database gets a new entry the socket client will be sent the data
 
                     if(regUID != undefined && regUID != "" && regUID != 0) { //We use the same check as in disconnected to see if the user is registered on the Node/Socket server
@@ -241,11 +243,13 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
                 } else {
                     console.log("Userpassword does not match.");
                     client.emit("authFail"); //Tell the client that the authentication has failed
+                    client.emit("authState", 0);
                 }
 
             } else {
                 console.log("Error finding users, either there are to many or none.");
                 client.emit("authFail"); //Tell the client that the authentication has failed
+                client.emit("authState", 0);
             }
 
         })

@@ -24,7 +24,11 @@ if (username_input != undefined && password_input != undefined) { //If the usern
 
 function authUser(username, password) { //The auth function
 
-    socket.emit('auth', username, password); //We emit the username and password to the server. This then checks the credentials in the local database
+    //Emmiting "auth"-does NOT use the database
+    //Emmiting "authUser" USES the database
+    //We have to add users in the database using the register page fist
+
+    socket.emit('authUser', username, password); //We emit the username and password to the server. This then checks the credentials in the local database
 
     socket.once('authState', function (state) { //Response from the server
 
