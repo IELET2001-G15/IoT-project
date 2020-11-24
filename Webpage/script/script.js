@@ -15,11 +15,11 @@ var allData = [waterLevelArray, waterPumpPowerArray,
 
 
 
-var username = prompt("Skriv inn brukernavnet ditt ", "1"); //This asks you for a username when the webpage first loads
-var password = prompt("Skriv in passordet ditt", "1"); //This asks you for a password when the webpage first loads
+var username_input = prompt("Skriv inn brukernavnet ditt ", "1"); //This asks you for a username when the webpage first loads
+var password_input = prompt("Skriv in passordet ditt", "1"); //This asks you for a password when the webpage first loads
 
-if (username != undefined && password != undefined) { //If the username and password is actually entered, empty input will not send the auth request
-    authUser(username, password); //Call the auth function on the client
+if (username_input != undefined && password_input != undefined) { //If the username and password is actually entered, empty input will not send the auth request
+    authUser(username_input, password_input); //Call the auth function on the client
 }
 
 function authUser(username, password) { //The auth function
