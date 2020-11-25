@@ -82,7 +82,7 @@ function getTimeAsString() {
 }
 
 //This is our registration key. If the user does not enter, they will not be allowed to register
-var regKey = "passord"; //This can be set to whatever you want, and it should probably be more secure than "password"
+var regKey = "MidjoSkyen"; //This can be set to whatever you want, and it should probably be more secure than "password"
 
 io.on('connection', function(socket) { //This is the server part of the "what happens when we first connect" function. Everytime a user connects a instance of this is set up for the user privatley
     console.log('a user connected');
