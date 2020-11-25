@@ -179,7 +179,7 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
 
             db.ref('users/').push( { //Create a new user in the user database
                 username: username,
-                password: password
+                password: password,
                 register_date: regDate,
                 is_active: 0,
                 last_active: regDate + "-" + currentTime,
