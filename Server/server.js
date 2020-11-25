@@ -10,11 +10,6 @@ var serverPort = 2520;
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
-//These arrays are only used if we do not use Firebase
-//Since we use Firebase, register username and password in the Register-webpage
-var username_arr = ["test", "bruker1"];
-var password_arr = ["passord", "passord1"];
-
 server.listen(serverPort, function() {
     console.log('listening on *:' + serverPort);
 });
@@ -125,77 +120,6 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
             });
         }
     });
-  
-     //Socket authentication function
-     // NOT USING THE DATABASE!
-     socket.on('auth', function(username, password) {
-
-        if(username != undefined && password != undefined) { //Check to see that the entered username and password isnt empty
-
-            var local_auth = false; //This will be used to keep track if a username/password matches or not in the next lines of code
-
-            for (var i = 0; i < username_arr.length; i++) { //We for loop trough the arrays of username and password declared earlier
-
-                if(username == username_arr[i]) { //If the username sent from the webpage matches or not
-                    if (password == password_arr[i]){ //If the password matches should the username also match
-                        console.log("Username and password matches");
-                        auth = true; //We set the global auth to true, this now means that this current client/user can call any other functions
-                        client.emit('authState', 1); //Tells the client that it has been authenticated
-                        local_auth = true; //The local auth is set to true to ensure that the later if-statement does not kick in
-                        return;
-                    } else {
-                        console.log("Username matches, but password does not");
-                        local_auth = false; //If the username matches, but the password does not
-                    }
-                } else {
-                    console.log("Username does not match");
-                    local_auth = false; //If the username does not match
-                }
-            }
-
-            if(local_auth != true) { //After the loop is done (and not broken by the return command) run this to set global auth to false
-                auth = false; //No username or password matches, so the user is not authenticated
-                client.emit('authState', 0); //Tells the client that is has not been authenticated
-                console.log("No usernames and password matches.");
-            }
-
-        } else {
-            console.log("Username og password not entered"); //If nothing is sent to the server with the auth request
-        }
-    });
-
-     //Register a user with the register page and functions
-     socket.on('regUser', function(key, username, password) { //One needs to call regUser with a key, username and password
-
-        if(key == regKey) { //This checks the regkey to see if the user has the right key (that they are allowed to register a user)
-            console.log("-------User Registration-------"); //Log this function clearly
-            console.log("Username:" + username);
-            console.log("Password:" + password);
-
-            var regDate = getDateAsString(); //Get the register date
-            var currentTime = getTimeAsString(); //Get the register time
-            console.log(regDate);
-            console.log(currentTime);
-
-            db.ref('users/').push( { //Create a new user in the user database
-                username: username,
-                password: password,
-                register_date: regDate,
-                is_active: 0,
-                last_active: regDate + "-" + currentTime,
-                ip_address: IPArr[3]
-            }).then((snap) => { //After the user is successfully registered do something
-                console.log("Data was sent to server and user " + username + " was registered");
-                client.emit("regSuccess", username); //We tell the client that the user was successfully registered
-                console.log("------------- End User Reg. -------------");
-            });
-
-        } else {
-            console.log("Registerkey does not match, you are not allowed to register a user");
-            client.emit("regDenied"); //If the user does not enter the correct key to register tell them
-        }
-    });
-
     //Authenticate a user on the controlpanel/client
     //USING THE DATABASE!
     socket.on('authUser', function (username, password) { //One needs to call authUser with a username and password
