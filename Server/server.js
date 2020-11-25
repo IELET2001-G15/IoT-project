@@ -120,6 +120,38 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
             });
         }
     });
+    
+    socket.on('regUser', function(key, username, password) { //One needs to call regUser with a key, username and password
+
+        if(key == regKey) { //This checks the regkey to see if the user has the right key (that they are allowed to register a user)
+            console.log("-------User Registration-------"); //Log this function clearly
+            console.log("Username:" + username);
+            console.log("Password:" + password);
+
+            var regDate = getDateAsString(); //Get the register date
+            var currentTime = getTimeAsString(); //Get the register time
+            console.log(regDate);
+            console.log(currentTime);
+
+            db.ref('users/').push( { //Create a new user in the user database
+                username: username,
+                password: password,
+                register_date: regDate,
+                is_active: 0,
+                last_active: regDate + "-" + currentTime,
+                ip_address: IPArr[3]
+            }).then((snap) => { //After the user is successfully registered do something
+                console.log("Data was sent to server and user " + username + " was registered");
+                client.emit("regSuccess", username); //We tell the client that the user was successfully registered
+                console.log("------------- End User Reg. -------------");
+            });
+
+        } else {
+            console.log("Registerkey does not match, you are not allowed to register a user");
+            client.emit("regDenied"); //If the user does not enter the correct key to register tell them
+        }
+    });
+
     //Authenticate a user on the controlpanel/client
     //USING THE DATABASE!
     socket.on('authUser', function (username, password) { //One needs to call authUser with a username and password
