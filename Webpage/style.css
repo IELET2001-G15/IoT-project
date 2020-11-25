@@ -338,8 +338,6 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     align-items: center;
     justify-content: center;
     background-color: white;
-    opacity: 50%;
-
 }
 
 #div2-btn-box-u1 {
