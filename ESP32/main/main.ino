@@ -14,8 +14,8 @@
 #include <SparkFun_VEML6030_Ambient_Light_Sensor.h>
 #include <ESP32Servo.h>
 
-AnalogIO waterLevel(35, INPUT);
-AnalogIO soilHumidity(26, INPUT);
+AnalogIO waterLevel(34, INPUT);
+AnalogIO soilHumidity(35, INPUT);
 AnalogIO waterPump(33, OUTPUT);
 AnalogIO light(25, OUTPUT);
 SparkFun_Ambient_Light veml(0x48);
@@ -31,13 +31,14 @@ const char* g_IP = "192.168.137.151";
 const uint16_t g_PORT = 2520;
 
 /**
- * Formats a number to a string. For example 1234 becomes "1234". Change buffer size to 
+ * Formats arbitrary datatype to C-string. For example 1234 becomes "1234". Change buffer size to 
  * accomodate more digits
  * @param identifier the ID that the server will recognize
  * @param format the format of the string. For example "%d" for integer and "%f" for float
- * @param value the number to be formated as a string and sent to server
+ * @param value the value to be formated as a C-string and sent to server
  */
-void send(const char* identifier, const char* format, uint16_t value) {
+template<typename T>
+void send(const char* identifier, const char* format, T value) {
     char buffer[10];
     sprintf(buffer, format, value);
     webSocket.emit(identifier, buffer);
@@ -49,22 +50,22 @@ void send(const char* identifier, const char* format, uint16_t value) {
  * @param length the size of the message
  */
 void sendData(const char* identifier, size_t length) {
-    if (identifier == "temperature") {
+    if (!strcmp(identifier, "temperature")) {
         send("temperature", "%f", bme.readTemperature());
-    } else if (identifier == "airHumidity") {
+    } else if (!strcmp(identifier, "airHumidity")) {
         send("airHumidity", "%f", bme.readHumidity());
-    } else if (identifier == "soilHumidity") {
+    } else if (!strcmp(identifier, "soilHumidity")) {
         send("soilHumidity", "%d", soilHumidity.read());
-    } else if (identifier == "waterLevel") {
+    } else if (!strcmp(identifier, "waterLevel")) {
         send("waterLevel", "%d", waterLevel.read());
-    } else if (identifier == "lux") {
-        send("lux", "%f", veml.readLight());
-    } else if (identifier == "all") {
-        send("temperature", "%f", bme.readTemperature());
-        send("airHumidity", "%f", bme.readHumidity());
+    } else if (!strcmp(identifier, "lux")) {
+        send("lux", "%d", veml.readLight());
+    } else if (!strcmp(identifier, "all")) {
+        send("temperature", "%4.2f", bme.readTemperature());
+        send("airHumidity", "%4.2f", bme.readHumidity());
         send("soilHumidity", "%d", soilHumidity.read());
         send("waterLevel", "%d", waterLevel.read());
-        send("lux", "%f", veml.readLight());
+        send("lux", "%d", veml.readLight());
     } else {
         Serial.printf("[ERROR] Could not find sensor with identifier: %s\n", identifier);
     }
@@ -77,7 +78,7 @@ void sendData(const char* identifier, size_t length) {
  */
 void changeWaterPumpPower(const char* level, size_t length) {
     Serial.printf("[OUTPUT] Set water pump to [bits]: %s\n", level);
-    waterPump.write(atoi(level));
+    servo.write(atoi(level));
 }
 
 void changeLightPower(const char* level, size_t length) {

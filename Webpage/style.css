@@ -76,6 +76,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     border-left: 1px solid rgba(240, 240, 240, 1.0);
     border-bottom: 2px solid rgba(240, 240, 240, 1.0);
     flex-flow: wrap;
+
 }
 
 .btn-title-con {
@@ -166,7 +167,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     align-items: center;
     justify-content: center;
     background-color: white;
-    border-radius: 10px;
+    opacity: 50%;
 
 }
 
@@ -190,8 +191,6 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     width: 25%;
     height: 25%;
     display: flex;
-    align-items: center;
-    justify-content: center;
     font-family: "Arial";
     font-size: 16px;
     font-weight: 800;
