@@ -50,6 +50,8 @@ function switchPage (){
     if (username_input != undefined && password_input != undefined) { //If the username and password is actually entered, empty input will not send the auth request
         authUser(username_input, password_input); //Call the auth function on the client
     }
+
+    controlPanel();
 }
 
 function authUser(username, password) { //The auth function
