@@ -16,7 +16,7 @@
 
 AnalogIO waterLevel(34, INPUT);
 AnalogIO soilHumidity(35, INPUT);
-AnalogIO waterPump(33, OUTPUT);
+AnalogIO waterPump(32, OUTPUT);
 AnalogIO light(25, OUTPUT);
 SparkFun_Ambient_Light veml(0x48);
 Adafruit_BME280 bme;
