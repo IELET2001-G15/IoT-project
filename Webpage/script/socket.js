@@ -65,40 +65,6 @@ function ventAngle(angle) {
 
 //#####################################################################################################
 
-var divMain = document.getElementById("main-content-div");
-var divReg = document.getElementById("main-register-div");
-var submitBtn = document.getElementById("submit-btn");
-var loginBtn = document.getElementById("login-btn");
-
-
-window.onload = divMain.style.display = "none";
-var testtest = false;
-
-function switchPage (){
-    divReg.style.display = "none";
-    divMain.style.display = "block";
-
-    var username_input = prompt("Skriv inn brukernavnet ditt ", "1"); //This asks you for a username when the webpage first loads
-    var password_input = prompt("Skriv in passordet ditt", "1"); //This asks you for a password when the webpage first loads
-
-    if (username_input != undefined && password_input != undefined) { //If the username and password is actually entered, empty input will not send the auth request
-        authUser(username_input, password_input); //Call the auth function on the client
-    }
-}
-
-loginBtn.onclick = function() {
-    switchPage();
-}
-
-submitBtn.onclick = function() {
-    console.log("Register button clicked.");
-    console.log(keyInp.value);
-    console.log(nameInp.value);
-    console.log(passwordInp.value);
-    registerUser(keyInp.value, nameInp.value, passwordInp.value)
-    switchPage();
-};
-
 //Register function, it requests registration on the server and wait for a response
 function registerUser(key, username, password) {
     console.log(key);

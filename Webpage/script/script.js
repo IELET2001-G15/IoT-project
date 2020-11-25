@@ -15,12 +15,42 @@ var allData = [waterLevelArray, waterPumpPowerArray,
 
 
 var title = document.getElementById("title-text");
+var divMain = document.getElementById("main-content-div");
+var divReg = document.getElementById("main-register-div");
 var submitBtn = document.getElementById("submit-btn");
+var loginBtn = document.getElementById("login-btn");
+
 
 var nameInp = document.getElementById("name-inp");
 var passwordInp = document.getElementById("password-inp");
 var keyInp = document.getElementById("key-inp");
 
+window.onload = divMain.style.display = "none";
+
+loginBtn.onclick = function() {
+    switchPage();
+}
+
+submitBtn.onclick = function() {
+    console.log("Register button clicked.");
+    console.log(keyInp.value);
+    console.log(nameInp.value);
+    console.log(passwordInp.value);
+    registerUser(keyInp.value, nameInp.value, passwordInp.value);
+    switchPage();
+};
+
+function switchPage (){
+    divReg.style.display = "none";
+    divMain.style.display = "block";
+
+    var username_input = prompt("Skriv inn brukernavnet ditt ", "1"); //This asks you for a username when the webpage first loads
+    var password_input = prompt("Skriv in passordet ditt", "1"); //This asks you for a password when the webpage first loads
+
+    if (username_input != undefined && password_input != undefined) { //If the username and password is actually entered, empty input will not send the auth request
+        authUser(username_input, password_input); //Call the auth function on the client
+    }
+}
 
 function authUser(username, password) { //The auth function
 
