@@ -72,6 +72,7 @@ var loginBtn = document.getElementById("login-btn");
 
 
 window.onload = divMain.style.display = "none";
+var testtest = false;
 
 function switchPage (){
     divReg.style.display = "none";
