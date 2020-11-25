@@ -164,18 +164,10 @@
     <!--This import is like the library imports in the head(top) element. It is placed here because certain HTML elements need to be defined before it can work-->
     <script src="libraries/drag-drop.js"></script>  <!--This library gives the different boxes the ability to be dragged. If you want to remove it be sure to remove the drag elements defined earlier-->
     
-    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script> <!-- The core Firebase JS SDK is always required and must be listed first -->
 
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script> 
-    <!-- Implements the realtime database-->
+    <script src="script/script.js">
 
-    <!--These scripts you can alter. They provide functionality/functions and are not libraries. View their purpose as splitting up your Arduino code in to different files for organization-->
-
-
-    <script src="script/script.js"></script>
+    </script>
 
 
     <script src="script/chartoperation.js"></script>
@@ -185,9 +177,7 @@
     <script src="script/socket.js"></script>
     <!--This allows you to change the property of Socket.io (the WebSockets) ALL SOCKET.IO FUNCTIONS ARE ALSO PLACED HERE!-->
     <!--This is the script for general webpage functionality. How will the keyboard work and more. Here you can add new things if you wish-->
-    <script src="script/firebase.js"></script> <!-- This script allows for database communications-->
-    
-
+   
 </body>
 
 </html>

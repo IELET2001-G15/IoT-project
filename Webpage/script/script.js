@@ -9,15 +9,47 @@ var pHArray = [];
 var waterPumpPowerArray = [];
 var timeArray = [];
 
-var allData = [waterLevelArray, waterPumpPowerArray, 
-               soilHumidityArray, luxArray, temperatureArray, 
-               CO2Array, pHArray, airHumidityArray];
+var allData = [waterLevelArray, waterPumpPowerArray,
+    soilHumidityArray, luxArray, temperatureArray,
+    CO2Array, pHArray, airHumidityArray];
+
+
+
+var username_input = prompt("Skriv inn brukernavnet ditt ", "1"); //This asks you for a username when the webpage first loads
+var password_input = prompt("Skriv in passordet ditt", "1"); //This asks you for a password when the webpage first loads
+
+if (username_input != undefined && password_input != undefined) { //If the username and password is actually entered, empty input will not send the auth request
+    authUser(username_input, password_input); //Call the auth function on the client
+}
+
+function authUser(username, password) { //The auth function
+
+    //Emmiting "auth"-does NOT use the database
+    //Emmiting "authUser" USES the database
+    //We have to add users in the database using the register page fist
+
+    socket.emit('authUser', username, password); //We emit the username and password to the server. This then checks the credentials in the local database
+
+    socket.once('authState', function (state) { //Response from the server
+
+        if (state == 0) { //If the server tells us 0, we are not authenticated because the username/password did not match
+            alert("Du tastet inn feil brukernavn eller passord."); //We are alerted with a message
+            console.log("Client is not authenticated");
+            location.reload(); //This reload the webpage so the user can not do anything if they dont manage to login
+        } else if (state == 1) { //IF the server tells us 1, we are authenticated and can proceed to use the webpage
+            alert("Du er logget in."); //We are alerted with a message
+            console.log("Client is authenticated");
+        }
+
+    });
+
+}
 
 window.onload = auto();
 
 function printDataValues(){
     var printstr = "";
-    for (var i in allData){
+    for (var i in allData) {
         var lastValue = allData[i].length - 1;
         if (allData[i][0] !== undefined){
             printstr += allData[i][lastValue];
