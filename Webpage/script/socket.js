@@ -68,17 +68,12 @@ function ventAngle(angle) {
 var divMain = document.getElementById("main-content-div");
 var divReg = document.getElementById("main-register-div");
 var submitBtn = document.getElementById("submit-btn");
+var loginBtn = document.getElementById("login-btn");
+
 
 window.onload = divMain.style.display = "none";
 
-var test123 = false;
-submitBtn.onclick = function() {
-    console.log("Register button clicked.");
-    console.log(keyInp.value);
-    console.log(nameInp.value);
-    console.log(passwordInp.value);
-    registerUser(keyInp.value, nameInp.value, passwordInp.value)
-
+function switchPage (){
     divReg.style.display = "none";
     divMain.style.display = "block";
 
@@ -88,6 +83,19 @@ submitBtn.onclick = function() {
     if (username_input != undefined && password_input != undefined) { //If the username and password is actually entered, empty input will not send the auth request
         authUser(username_input, password_input); //Call the auth function on the client
     }
+}
+
+loginBtn.onclick = function() {
+    switchPage();
+}
+
+submitBtn.onclick = function() {
+    console.log("Register button clicked.");
+    console.log(keyInp.value);
+    console.log(nameInp.value);
+    console.log(passwordInp.value);
+    registerUser(keyInp.value, nameInp.value, passwordInp.value)
+    switchPage();
 };
 
 //Register function, it requests registration on the server and wait for a response
@@ -100,7 +108,6 @@ function registerUser(key, username, password) {
     socket.once('regSuccess', function (username) { //If the registration is successfull
         console.log('Brukeren din ble registrert!');
         title.innerHTML = `Brukeren din ${username} ble registrert!`;
-        test123 = true;
     });
 
     socket.once('regDenied', function () { //If the registration failed

@@ -100,7 +100,7 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     font-weight: 600;
 }
 
-#submit-btn {
+.start-btn {
     width: 65%;
     height: 15%;
     display: flex;
