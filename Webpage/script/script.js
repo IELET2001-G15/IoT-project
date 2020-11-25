@@ -13,7 +13,7 @@ var allData = [waterLevelArray, waterPumpPowerArray,
                soilHumidityArray, luxArray, temperatureArray, 
                CO2Array, pHArray, airHumidityArray];
 
-
+window.onload = auto();
 
 function printDataValues(){
     var printstr = "";
@@ -76,4 +76,25 @@ function waterPumpPowerConverter(data){
     var newData = data*255/100;
     newData = Math.round(newData);
     return newData;
+}
+
+function auto() {
+    var divtitle = document.getElementById("div2-title");
+    var divU1 = document.getElementById("div2-btn-box-u1");
+    var divU2 = document.getElementById("div2-btn-box-u2");
+    var divD1 = document.getElementById("div2-btn-box-d1");
+
+    if (divU1.style.display === "none") {
+        divU1.style.display = "block";
+        divU2.style.display = "block";
+        divD1.style.display = "block";
+        divtitle.innerHTML = "MANUAL CONTROL PANEL ON"
+
+    } else {
+        divU1.style.display = "none";
+        divU2.style.display = "none";
+        divD1.style.display = "none";
+        divtitle.innerHTML = "MANUAL CONTROL PANEL OFF"
+
+    }
 }

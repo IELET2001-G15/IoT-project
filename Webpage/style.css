@@ -191,8 +191,6 @@ html,body { /*Here two elements are defined at the same time, that is possible. 
     width: 25%;
     height: 25%;
     display: flex;
-    align-items: center;
-    justify-content: center;
     font-family: "Arial";
     font-size: 16px;
     font-weight: 800;
