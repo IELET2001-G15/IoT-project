@@ -14,13 +14,13 @@ var allData = [waterLevelArray, waterPumpPowerArray,
     CO2Array, pHArray, airHumidityArray];
 
 
+var title = document.getElementById("title-text");
+var submitBtn = document.getElementById("submit-btn");
 
-var username_input = prompt("Skriv inn brukernavnet ditt ", "1"); //This asks you for a username when the webpage first loads
-var password_input = prompt("Skriv in passordet ditt", "1"); //This asks you for a password when the webpage first loads
+var nameInp = document.getElementById("name-inp");
+var passwordInp = document.getElementById("password-inp");
+var keyInp = document.getElementById("key-inp");
 
-if (username_input != undefined && password_input != undefined) { //If the username and password is actually entered, empty input will not send the auth request
-    authUser(username_input, password_input); //Call the auth function on the client
-}
 
 function authUser(username, password) { //The auth function
 
@@ -40,12 +40,9 @@ function authUser(username, password) { //The auth function
             alert("Du er logget in."); //We are alerted with a message
             console.log("Client is authenticated");
         }
-
     });
-
 }
 
-window.onload = auto();
 
 function printDataValues(){
     var printstr = "";
@@ -110,7 +107,7 @@ function waterPumpPowerConverter(data){
     return newData;
 }
 
-function auto() {
+function controlPanel() {
     var divtitle = document.getElementById("div2-title");
     var divU1 = document.getElementById("div2-btn-box-u1");
     var divU2 = document.getElementById("div2-btn-box-u2");

@@ -65,6 +65,50 @@ function ventAngle(angle) {
 
 //#####################################################################################################
 
+var divMain = document.getElementById("main-content-div");
+var divReg = document.getElementById("main-register-div");
+var submitBtn = document.getElementById("submit-btn");
+
+window.onload = divMain.style.display = "none";
+
+var test123 = false;
+submitBtn.onclick = function() {
+    console.log("Register button clicked.");
+    console.log(keyInp.value);
+    console.log(nameInp.value);
+    console.log(passwordInp.value);
+    registerUser(keyInp.value, nameInp.value, passwordInp.value)
+
+    divReg.style.display = "none";
+    divMain.style.display = "block";
+
+    var username_input = prompt("Skriv inn brukernavnet ditt ", "1"); //This asks you for a username when the webpage first loads
+    var password_input = prompt("Skriv in passordet ditt", "1"); //This asks you for a password when the webpage first loads
+
+    if (username_input != undefined && password_input != undefined) { //If the username and password is actually entered, empty input will not send the auth request
+        authUser(username_input, password_input); //Call the auth function on the client
+    }
+};
+
+//Register function, it requests registration on the server and wait for a response
+function registerUser(key, username, password) {
+    console.log(key);
+    console.log(username);
+    console.log(password);
+    socket.emit('regUser', key, username, password); //Call the socket function with the right arguments
+
+    socket.once('regSuccess', function (username) { //If the registration is successfull
+        console.log('Brukeren din ble registrert!');
+        title.innerHTML = `Brukeren din ${username} ble registrert!`;
+        test123 = true;
+    });
+
+    socket.once('regDenied', function () { //If the registration failed
+        title.innerHTML = `Brukeren din ${username} ble ikke registrert.`;
+        console.log('Registrering feilet');
+    });
+}
+
 function requestDataFromBoard(request, interval) {
     clearInterval(timer);
     timer = setInterval(function() {

@@ -20,19 +20,60 @@
 </head> <!-- the "/" indicates that the element is closed/stopped (you are done defining it)-->
 
 <body>
-    <!--Defines the body element. This is traditionally where the main content is placed. Its the "middle" of the webpage-->
-    <div id="main-content">
-        <!--The main container of the webpage/the main HTML "tag"-->
+
+    <div class="main-content" id="main-register-div">
+
+        <div id="register-card">
+
+            <div id="register-top">
+                <div id="register-logo-con">
+                    <img id="logo-img" src="datakom_logo_black.png">
+                </div>
+                <div id="register-title-con">
+                    <h1 id="title-text">Registrer bruker</h1>
+                </div>
+            </div>
+
+            <div id="register-btm">
+
+                <input class="register-input" id="name-inp" type="text" placeholder="Brukernavn">
+
+                <input class="register-input" id="password-inp" type="password" placeholder="Passord">
+
+                <input class="register-input" id="key-inp" type="text" placeholder="Nøkkel">
+
+                <div id="submit-btn">Registrer!</div>
+
+            </div>
+
+        </div>
+
+        <div id="creators">
+
+            <div id="images-container">
+
+                <div id="ntnu">
+                    <img src="ntnulogo_black.png" id="ntnu-img-black">
+                    <img src="ntnulogo.png" id="ntnu-img-blue">
+                </div>
+
+            </div>
+
+            <div id="webmaster">
+                <h4>Webmaster: Gruppe 15 :)</h4>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="main-content" id="main-content-div">
 
         <div id="control-content">
-            <!--Just another HTML tag, this one defines the control panel container-->
 
             <div class="control-module" id="control-module-1">
-                <!--This defines the first box with the keyboard in it (upper left)-->
 
-                <!-- Content of first box-->
                 <div class="btn-container dragElement">
-                    <!--Here the dragElement is the entire box-->
                     <div class="btn-title-con dragBox">
                         <h2 class="btn-title">GET DATA BUTTONS</h2>
                     </div>
@@ -40,7 +81,6 @@
                         <div class="div1-btn" id="div1-btn-getdata" onclick="requestDataFromBoard('all', 1000)">GET DATA</div>
                     </div>
                     <div class="div1-btn-box">
-                        <!--Button container (right side of the container (split in middle) with a white background)-->
                         <div class="div1-btn" id="div1-btn-stopdata" onclick="stopDataFromBoard()">STOP DATA</div>
                         <!--The actual button with a red background. When you click this a functions is called-->
                         <!--stopDataFromBoard function stops data transfer from the ESP32 to the webpage-->
