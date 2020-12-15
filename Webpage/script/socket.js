@@ -1,5 +1,4 @@
 var socket = io.connect('192.168.137.151:2520', {secure: false});
-
 var timer;
 
 socket.on('clientConnected', function(id, ip) {
@@ -7,8 +6,7 @@ socket.on('clientConnected', function(id, ip) {
     console.log("Client IP: " + ip);
 });
 
-//################################################################################################
-
+// All communication from ESP to website
 socket.on('pushWaterLevel', function(data) {
     console.log('Water level data was received: ' + data);
     waterLevelArray.push(Number(data));
@@ -45,8 +43,7 @@ socket.on('pushLux', function(data) {
     luxArray.push(Number(data));
 });
 
-//###################################################################################
-
+// All communication from website to ESP
 function lightPower(power) {
     socket.emit('lightPower', power);
     console.log('lightPower was called with power [bits]: ' + power);
@@ -63,26 +60,25 @@ function ventAngle(angle) {
     console.log('ventAngle was called with angle [deg]: ' + angle);
 }
 
-//#####################################################################################################
-
-//Register function, it requests registration on the server and wait for a response
+// Register a user
 function registerUser(key, username, password) {
     console.log(key);
     console.log(username);
     console.log(password);
-    socket.emit('regUser', key, username, password); //Call the socket function with the right arguments
+    socket.emit('regUser', key, username, password);
 
-    socket.once('regSuccess', function (username) { //If the registration is successfull
+    socket.once('regSuccess', function (username) {
         console.log('Brukeren din ble registrert!');
         title.innerHTML = `Brukeren din ${username} ble registrert!`;
     });
 
-    socket.once('regDenied', function () { //If the registration failed
+    socket.once('regDenied', function () {
         title.innerHTML = `Brukeren din ${username} ble ikke registrert.`;
         console.log('Registrering feilet');
     });
 }
 
+// Main functionality of the website
 function requestDataFromBoard(request, interval) {
     clearInterval(timer);
     timer = setInterval(function() {
@@ -91,13 +87,13 @@ function requestDataFromBoard(request, interval) {
         myLineChart.update();
         printDataValues();
         updateTime();
-        console.log(waterPumpPowerArray.length)
-        console.log(timeArray.length)
+        // automode() can be used to regulate the water plant automatically, but we have no pump atm
     }, interval);
     socket.emit('requestDataFromBoard', request, interval);
     console.log('requestDataFromBoard was called with request/interval [ms]: ' + request + '/' + interval);
 }
 
+// Stops the communication between esp and server
 function stopDataFromBoard() {
     clearInterval(timer);
     socket.emit('stopDataFromBoard');

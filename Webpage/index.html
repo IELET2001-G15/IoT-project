@@ -1,30 +1,20 @@
 <!DOCTYPE html>
-<!--Defines the HTML document-->
-
 <html lang="no">
-<!--Sets the language for the webpage-->
 
 <head>
-    <!--Defined the head element, which is to say the top of the webpage. Sometimes menus are placed here-->
     <meta charset="UTF-8">
-    <!--Sets the encoding of the webpage-->
     <title>Datakom || Kontrollpanel</title>
-    <!--Sets the title of the webpage-->
     <link rel="stylesheet" href="style.css">
-    <!--Imports the stylesheet of the webpage. It gives element style-->
     <script src="libraries/socket.io.js"></script>
-    <!--Load Socket.io library-->
     <script src="libraries/Chart.min.js"></script>
-    <!--Load Chart.js library-->
 
-</head> <!-- the "/" indicates that the element is closed/stopped (you are done defining it)-->
+</head>
 
 <body>
 
+    <!-- First main window: reg and login -->
     <div class="main-content" id="main-register-div">
-
         <div id="register-card">
-
             <div id="register-top">
                 <div id="register-logo-con">
                     <img id="logo-img" src="datakom_logo_black.png">
@@ -34,84 +24,73 @@
                 </div>
             </div>
 
-
+            <!-- Retrieves input from user -->
             <div id="register-btm">
-
                 <input class="register-input" id="name-inp" type="text" placeholder="Brukernavn">
-
                 <input class="register-input" id="password-inp" type="password" placeholder="Passord">
-
                 <input class="register-input" id="key-inp" type="text" placeholder="Nøkkel">
+
+                <!-- Reg and login buttons -->
                 <div class="start-btn" id="submit-btn">Registrer!</div>
                 <div class="start-btn" id="login-btn">Login!</div>
-
             </div>
         </div>
 
+        <!-- Repping ntnu -->
         <div id="creators">
-
             <div id="images-container">
-
                 <div id="ntnu">
                     <img src="ntnulogo_black.png" id="ntnu-img-black">
                     <img src="ntnulogo.png" id="ntnu-img-blue">
                 </div>
-
             </div>
 
             <div id="webmaster">
                 <h4>Webmaster: Gruppe 15 :)</h4>
             </div>
-
         </div>
-
     </div>
 
+    <!-- Second main window: control panel -->
     <div class="main-content" id="main-content-div">
-
         <div id="control-content">
 
+            <!-- Drag and drop functionality on first div-->
             <div class="control-module" id="control-module-1">
-
                 <div class="btn-container dragElement">
                     <div class="btn-title-con dragBox">
                         <h2 class="btn-title">GET DATA BUTTONS</h2>
                     </div>
+
+                    <!-- First div content: three buttons, start request, stop request and refresh site -->
                     <div class="div1-btn-box">
                         <div class="div1-btn" id="div1-btn-getdata" onclick="requestDataFromBoard('all', 1000)">GET DATA</div>
                     </div>
                     <div class="div1-btn-box">
                         <div class="div1-btn" id="div1-btn-stopdata" onclick="stopDataFromBoard()">STOP DATA</div>
-                        <!--The actual button with a red background. When you click this a functions is called-->
-                        <!--stopDataFromBoard function stops data transfer from the ESP32 to the webpage-->
                     </div>
                     <div class="div1-btn-box">
-                        <!--Button container (right side of the container (split in middle) with a white background)-->
                         <div class="div1-btn" id="div1-btn-reset" onclick="window.location.reload()">RESET</div>
-                        <!--The actual button with a red background. When you click this a functions is called-->
-                        <!--stopDataFromBoard function stops data transfer from the ESP32 to the webpage-->
                     </div>
                 </div>
             </div>
 
+            <!-- Drag and drop functionality on second div -->
             <div class="control-module" id="control-module-2">
-                <!--This defines the second box with the buttons in it (upper right)-->
-
-                <!-- Content of second box-->
                 <div class="btn-container dragElement">
-                    <!--Here the dragElement is the entire box-->
                     <div class="btn-title-con dragBox">
-                        <!--But one can only start to drag it if one clicks on the top-box where the title is -->
                         <h2 class="btn-title" onclick="controlPanel()" id="div2-title">MANUAL CONTROL PANEL on</h2>
-                        <!--Title in the title-box-->
                     </div>
 
+                    <!-- Second div content: different user inputs to manual control the system.
+                    LED ON/OFF -->
                     <div class="div2-btn-box" id="div2-btn-box-u1">
                         <h3>Change state of LED </h3>
                         <div class="div2-btn" id="div2-btn-on" onclick="lightPower(255)">ON</div>
                         <div class="div2-btn" id="div2-btn-off" onclick="lightPower(0)">OFF</div>
                     </div>
 
+                    <!-- Turn ON/OFF the ventilation system -->
                     <div class="div2-btn-box" id="div2-btn-box-u2">
                         <h3>Close/Open Vent &nbsp;</h3>
                         <label class="switch">
@@ -120,37 +99,31 @@
                         </label>
                     </div>
 
+                    <!-- Manually adjust the water pump power with a slider -->
                     <div class="div2-btn-box" id="div2-btn-box-d1">
-                        <!--Button container (right side of the container (split in middle) with a white background)-->
                         <div class="slidecontainer">
                             <h3>Control water flow from pump (0% - 100%):</h3> <br>
                             <input type="range" min="0" max="100" value="0" class="slider" id="myRange" onchange="waterPumpPower(this.value)">
                         </div>
                     </div>
-
                 </div>
             </div>
 
+            <!-- Third div content: Plot graph of all the incoming variables -->
             <div class="control-module" id="control-module-3">
-                <!--This defines the third box with the graph in it (lower left)-->
-
-                <!-- Content of third box-->
                 <div class="chart-container dragElement dragBox">
-                    <!--Define the chart container element (box where the chart is placed)-->
                     <canvas id="myChart" width="400" height="400"></canvas>
-                    <!--The actual chart element. Notice, this uses an id so copying it wont give you more charts. Something else has to be done-->
                 </div>
             </div>
 
+            <!-- Drag and drop functionality on forth div -->
             <div class="control-module" id="control-module-4">
-                <!--This defines the second box with the buttons in it (upper right)-->
                 <div class="btn-container dragElement">
-                    <!--Here the dragElement is the entire box-->
                     <div class="btn-title-con dragBox">
-                        <!--But one can only start to drag it if one clicks on the top-box where the title is -->
                         <h2 class="btn-title">LIVE DATA</h2>
                     </div>
 
+                    <!-- Forth div content: displaying the incoming variables live in a list -->
                     <div class="div4-txt-box" id="div4-txt-variable">
                         <p>
                             &nbsp;&nbsp;&nbsp;Water level [mm]:<br>
@@ -161,7 +134,6 @@
                             &nbsp;&nbsp;&nbsp;CO2:<br>
                             &nbsp;&nbsp;&nbsp;pH:<br>
                             &nbsp;&nbsp;&nbsp;Air humidty:<br>
-
                         </p>
                     </div>
 
@@ -180,14 +152,14 @@
 
                     <div class="div4-txt-box" id="div4-txt-info">
                         <p>
-                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
-                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
-                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
-                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
-                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
-                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
-                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
-                            &nbsp;&nbsp;&nbsp;Liten beksrivelse<br>
+                            &nbsp;&nbsp;&nbsp;Vanntanknivå<br>
+                            &nbsp;&nbsp;&nbsp;Kraft på pumpen<br>
+                            &nbsp;&nbsp;&nbsp;Fuktighetssensor<br>
+                            &nbsp;&nbsp;&nbsp;Lux i drivhuset<br>
+                            &nbsp;&nbsp;&nbsp;Temperaturen i drivhuset <br>
+                            &nbsp;&nbsp;&nbsp;CO2 verdien i drivhuset<br>
+                            &nbsp;&nbsp;&nbsp;pH-verdien på jorden<br>
+                            &nbsp;&nbsp;&nbsp;Fuktighet i lufta<br>
 
                         </p>
                     </div>
@@ -196,28 +168,15 @@
         </div>
     </div>
 
-
     <!-- TESTING FOR THE REAL TIME DATABASE-->
     <pre id="humidity"></pre>
-    
-    <!--Script imports-->
-    <!--This import is like the library imports in the head(top) element. It is placed here because certain HTML elements need to be defined before it can work-->
-    <script src="libraries/drag-drop.js"></script>  <!--This library gives the different boxes the ability to be dragged. If you want to remove it be sure to remove the drag elements defined earlier-->
-    
 
-    <script src="script/script.js">
-
-    </script>
-
-
+    <!-- Import scripts to html -->
+    <script src="libraries/drag-drop.js"></script>
+    <script src="script/script.js"></script>
     <script src="script/chartoperation.js"></script>
-    <!--This allow yo to change how the graph works, how many graphs, colors, titles etc.-->
-
-
     <script src="script/socket.js"></script>
-    <!--This allows you to change the property of Socket.io (the WebSockets) ALL SOCKET.IO FUNCTIONS ARE ALSO PLACED HERE!-->
-    <!--This is the script for general webpage functionality. How will the keyboard work and more. Here you can add new things if you wish-->
-   
+
 </body>
 
 </html>
