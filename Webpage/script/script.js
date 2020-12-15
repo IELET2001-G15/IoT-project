@@ -172,5 +172,7 @@ function autoMode() {
     var lastValue = soilHumidityArray.length - 1;
     if (soilHumidityArray[lastValue] < waterDryLevel){
         waterPumpPower(waterLevelPump);
+    } else {
+        waterPumpPower(0);
     }
 }
