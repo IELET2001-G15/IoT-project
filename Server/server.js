@@ -172,37 +172,42 @@ io.on('connection', function(socket) { // This is the server part of the "what h
                 var output = value[UID];
                 console.log(output);
 
-                if(output.password == password) { //Then, if the password matches we proceed. The password can not be checked before we have fetched the data
+                // If the password is correct, authentication has succeeded
+                if(output.password == password) {
                     console.log("Username and password matches, user is authenticated");
-                    regUID = UID; //Does it match we set the client-global variable regUID to the UID of the data entry. We call this ID the UserID (UID)
+                    regUID = UID;
                     console.log(regUID);
-                    client.emit("authSuccess", username); //Now we tell the client that it has successfully authenticated with the server
+                    client.emit("authSuccess", username);
                     client.emit("authState", 1);
-                    startListeningForData(); //Start client data stream, everytime the database gets a new entry the socket client will be sent the data
+                    startListeningForData();
 
-                    if(regUID != undefined && regUID != "" && regUID != 0) { //We use the same check as in disconnected to see if the user is registered on the Node/Socket server
+                    //We use the same check as in disconnected to see if the user is registered on the Node/Socket server
+                    if(regUID != undefined && regUID != "" && regUID != 0) {
                         var currentDate = getDateAsString(); //Get date
                         var currentTime = getTimeAsString(); //Get time
-                        var currentDateTime = currentDate + "-" + currentTime; //Fusion them together
+                        var currentDateTime = currentDate + "-" + currentTime;
 
-                        db.ref('users/' + regUID).update({ //Tell the database that the user has logged in and is now active
-                            is_active: 1, //The user is active
-                            last_active: currentDateTime, //Save the last_active time of a user to now
-                            ip_address: IPArr[3] //Save the IP-address of the user
-                        }).then((snap) => { //When the user update has been saved
+                        //Tell the database that the user has logged in and is now active
+                        db.ref('users/' + regUID).update({
+                            is_active: 1,
+                            last_active: currentDateTime,
+                            ip_address: IPArr[3]
+                        }).then((snap) => {
                             console.log("User " + regUID + " updated last_active to " + currentDateTime + " and ip_address to " + IPArr[3]);
                         });
                     }
 
                 } else {
+                    //Tell the client that the authentication has failed
                     console.log("Userpassword does not match.");
-                    client.emit("authFail"); //Tell the client that the authentication has failed
+                    client.emit("authFail");
                     client.emit("authState", 0);
                 }
 
             } else {
+                //Tell the client that the authentication has failed
                 console.log("Error finding users, either there are to many or none.");
-                client.emit("authFail"); //Tell the client that the authentication has failed
+                client.emit("authFail");
                 client.emit("authState", 0);
             }
 
