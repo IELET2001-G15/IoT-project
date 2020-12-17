@@ -17,19 +17,19 @@ server.listen(serverPort, function() {
     console.log('listening on *:' + serverPort);
 });
 
-//We configure the firebase admin to connect to our database with admin credentials
-var serviceAccount = require("./ielet2001-firebase-adminsdk.json"); //This is our admin "password" file (it is a file and it is located in a folder)
+// We configure the firebase admin to connect to our database with admin credentials
+var serviceAccount = require("./ielet2001-firebase-adminsdk.json");
 var fAdmin = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://ielet2001.firebaseio.com/" //This is the link to our database, this and the password file has to be specified by you
+    databaseURL: "https://ielet2001.firebaseio.com/"
 });
 
-//We use the firebase admin credentials to fetch the database object that lets us interact with our database specifically
+// We use the firebase admin credentials to fetch the database object that lets us interact with our database specifically
 var db = fAdmin.database();
 
-//A function to generate the current date in a organized format as a string. We want to date our events.
+// A function to generate the current date in a organized format as a string. We want to date our events.
 function getDateAsString() {
-    var currentDate = new Date(); //We use the JavaScript Date object/function and then configure it
+    var currentDate = new Date(); // We use the JavaScript Date object/function and then configure it
     var currentMonth;
     var currentDay;
 
@@ -46,12 +46,12 @@ function getDateAsString() {
     }
 
     var date = currentDate.getFullYear() + "-" + currentMonth + "-" + currentDay;
-    return date; //returns the date string
+    return date;
 }
 
 // A function to generate the current time in a organized format as a string. We want to timestamp our events
 function getTimeAsString() {
-    var currentTime = new Date(); // We use the JavaScript Date object/function and then configure it
+    var currentTime = new Date();
 
     var currentHour;
     var currentMinute;
@@ -76,13 +76,15 @@ function getTimeAsString() {
     }
 
     var time = currentHour + "-" + currentMinute + "-" + currentSecond;
-    return time; //returns the time string
+    return time;
 }
 
 // This is our registration key. If the user does not enter, they will not be allowed to register
-var regKey = "MidjoSkyen"; //This can be set to whatever you want, and it should probably be more secure than "password"
+var regKey = "MidjoSkyen";
 
-io.on('connection', function(socket) { // This is the server part of the "what happens when we first connect" function. Everytime a user connects a instance of this is set up for the user privatley
+// This is the server part of the "what happens when we first connect" function.
+// Everytime a user connects a instance of this is set up for the user privatkey.
+io.on('connection', function(socket) {
     console.log('a user connected');
     var regUID = 0;
     var clientID = socket.id;
@@ -99,41 +101,46 @@ io.on('connection', function(socket) { // This is the server part of the "what h
     var timer;
 
     // Handles event when client disconnects. Stops data requests by clearing timer
-    client.on('disconnect', function(){ //This function is called for a client when the client is disconnected. The server can then do something even tough the client is disconnected
-        //When the user disconnects we want to log and store this in the database
-        if(regUID != undefined && regUID != "" && regUID != 0) { //This checks that the user is logged in via the regUID
+    // This function is called for a client when the client is disconnected.
+    // The server can then do something even tough the client is disconnected
+    // when the user disconnects we want to log and store this in the database
+    client.on('disconnect', function(){
+        if(regUID != undefined && regUID != "" && regUID != 0) {
             clearInterval(timer);
             console.log("user " + clientID + " disconnected, stopping timers if any");
             stopListeningForData();
 
-            var currentDate = getDateAsString(); //Get the date
-            var currentTime = getTimeAsString(); //Get the time
-            var currentDateTime = currentDate + "-" + currentTime; //Put the date and time together
+            var currentDate = getDateAsString();
+            var currentTime = getTimeAsString();
+            var currentDateTime = currentDate + "-" + currentTime;
 
-            db.ref('users/' + regUID).update({ //Here we make a call to our database to update our user in the users directory of the database
-                is_active: 0, //We set the sures to not-active
-                last_active: currentDateTime, //We timestamp the last time the user was logged on (which is to say when they logged of)
-                ip_address: IPArr[3] //We log the last known IP-address of the user, in case this could be usefull
-            }).then((snap) => { //The .then function is called after a sucessfull call/request to the databas
+            // Here we make a call to our database to update our user in the users directory of the database
+            db.ref('users/' + regUID).update({
+                is_active: 0,
+                last_active: currentDateTime,
+                ip_address: IPArr[3]
+            }).then((snap) => { // The .then function is called after a sucessfull call/request to the database
                 console.log("User " + regUID + " updated last_active to " + currentDateTime + " and ip_address to " + IPArr[3]);
-                console.log("User " + regUID + " is no longer ative"); //We console log some properties about the user
+                console.log("User " + regUID + " is no longer ative");
             });
         }
     });
     
-    socket.on('regUser', function(key, username, password) { //One needs to call regUser with a key, username and password
+    socket.on('regUser', function(key, username, password) { // One needs to call regUser with a key, username and password
 
-        if(key == regKey) { //This checks the regkey to see if the user has the right key (that they are allowed to register a user)
-            console.log("-------User Registration-------"); //Log this function clearly
+        // This checks the regkey to see if the user has the right key (that they are allowed to register a user)
+        if(key == regKey) {
+            console.log("-------User Registration-------");
             console.log("Username:" + username);
             console.log("Password:" + password);
 
-            var regDate = getDateAsString(); //Get the register date
-            var currentTime = getTimeAsString(); //Get the register time
+            var regDate = getDateAsString();
+            var currentTime = getTimeAsString();
             console.log(regDate);
             console.log(currentTime);
 
-            db.ref('users/').push( { //Create a new user in the user database
+            // Create a new user in the user database
+            db.ref('users/').push( {
                 username: username,
                 password: password,
                 register_date: regDate,
@@ -142,24 +149,25 @@ io.on('connection', function(socket) { // This is the server part of the "what h
                 ip_address: IPArr[3]
             }).then((snap) => { //After the user is successfully registered do something
                 console.log("Data was sent to server and user " + username + " was registered");
-                client.emit("regSuccess", username); //We tell the client that the user was successfully registered
+                client.emit("regSuccess", username);
                 console.log("------------- End User Reg. -------------");
             });
 
         } else {
+            // If the user does not enter the correct key to register tell them
             console.log("Registerkey does not match, you are not allowed to register a user");
-            client.emit("regDenied"); //If the user does not enter the correct key to register tell them
+            client.emit("regDenied");
         }
     });
 
-    //Authenticate a user on the controlpanel/client
-    //USING THE DATABASE!
-    socket.on('authUser', function (username, password) { //One needs to call authUser with a username and password
-        var data = db.ref('users').orderByChild('username').equalTo(username); //This is a firebase db query
-        //We want to search the "users" database, and in that database we want to target on of the subfields called username
-        //Then with that target we go trough all the user entries and look for the user with a username equal to our entered username
-        //When that user/object is found we send it from the database to Node.js to do something with the data (which happens below)
+    // Authenticate a user on the controlpanel/client
+    // USING THE DATABASE!
+    socket.on('authUser', function (username, password) {
+        var data = db.ref('users').orderByChild('username').equalTo(username);
 
+        // We want to search the "users" database, and in that database we want to target on of the subfields called username
+        // Then with that target we go trough all the user entries and look for the user with a username equal to our entered username
+        // When that user/object is found we send it from the database to Node.js to do something with the data (which happens below)
         data.once('value', function(snap) {
 
         }).then((snap) => {
@@ -181,13 +189,13 @@ io.on('connection', function(socket) { // This is the server part of the "what h
                     client.emit("authState", 1);
                     startListeningForData();
 
-                    //We use the same check as in disconnected to see if the user is registered on the Node/Socket server
+                    // We use the same check as in disconnected to see if the user is registered on the Node/Socket server
                     if(regUID != undefined && regUID != "" && regUID != 0) {
                         var currentDate = getDateAsString(); //Get date
                         var currentTime = getTimeAsString(); //Get time
                         var currentDateTime = currentDate + "-" + currentTime;
 
-                        //Tell the database that the user has logged in and is now active
+                        // Tell the database that the user has logged in and is now active
                         db.ref('users/' + regUID).update({
                             is_active: 1,
                             last_active: currentDateTime,
@@ -198,14 +206,14 @@ io.on('connection', function(socket) { // This is the server part of the "what h
                     }
 
                 } else {
-                    //Tell the client that the authentication has failed
+                    // Tell the client that the authentication has failed
                     console.log("Userpassword does not match.");
                     client.emit("authFail");
                     client.emit("authState", 0);
                 }
 
             } else {
-                //Tell the client that the authentication has failed
+                // Tell the client that the authentication has failed
                 console.log("Error finding users, either there are to many or none.");
                 client.emit("authFail");
                 client.emit("authState", 0);
