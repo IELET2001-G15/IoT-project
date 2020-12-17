@@ -1,15 +1,18 @@
+
+// Constants and variables
 var fs = require('fs');
 var http = require('http');
 var express = require('express');
 var app = express();
 
-var admin = require("firebase-admin"); //We get the firebase admin library
+// We get the firebase admin library
+var admin = require("firebase-admin");
 
 var serverPort = 2520;
-
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
+// Server starts listening to a port
 server.listen(serverPort, function() {
     console.log('listening on *:' + serverPort);
 });
@@ -46,9 +49,9 @@ function getDateAsString() {
     return date; //returns the date string
 }
 
-//A function to generate the current time in a organized format as a string. We want to timestamp our events
+// A function to generate the current time in a organized format as a string. We want to timestamp our events
 function getTimeAsString() {
-    var currentTime = new Date(); //We use the JavaScript Date object/function and then configure it
+    var currentTime = new Date(); // We use the JavaScript Date object/function and then configure it
 
     var currentHour;
     var currentMinute;
@@ -76,10 +79,10 @@ function getTimeAsString() {
     return time; //returns the time string
 }
 
-//This is our registration key. If the user does not enter, they will not be allowed to register
+// This is our registration key. If the user does not enter, they will not be allowed to register
 var regKey = "MidjoSkyen"; //This can be set to whatever you want, and it should probably be more secure than "password"
 
-io.on('connection', function(socket) { //This is the server part of the "what happens when we first connect" function. Everytime a user connects a instance of this is set up for the user privatley
+io.on('connection', function(socket) { // This is the server part of the "what happens when we first connect" function. Everytime a user connects a instance of this is set up for the user privatley
     console.log('a user connected');
     var regUID = 0;
     var clientID = socket.id;
@@ -95,10 +98,7 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
 
     var timer;
 
-    /**
-     * Handles event when client disconnects. Stops data requests by clearing timer
-     */
-
+    // Handles event when client disconnects. Stops data requests by clearing timer
     client.on('disconnect', function(){ //This function is called for a client when the client is disconnected. The server can then do something even tough the client is disconnected
         //When the user disconnects we want to log and store this in the database
         if(regUID != undefined && regUID != "" && regUID != 0) { //This checks that the user is logged in via the regUID
@@ -160,19 +160,16 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
         //Then with that target we go trough all the user entries and look for the user with a username equal to our entered username
         //When that user/object is found we send it from the database to Node.js to do something with the data (which happens below)
 
-        data.once('value', function(snap) { //We call this function one time, when the data is fetched from the database. The data is inside the snap variable
+        data.once('value', function(snap) {
 
-        }).then((snap) => { //When the data is successfully fetched (finished downloading properly) we do something with ti
-
-            if(snap.numChildren() == 1) { //We check to see that there is only one user with the username
-                //We have no registration check to see if there already exists a user with a given username
+        }).then((snap) => {
+            if(snap.numChildren() == 1) {
                 console.log("User exists");
-                var value = snap.val(); //This is where we get the JSON-array of all returned data entries from the database (even tough it is only 1 object returned)
+                var value = snap.val();
                 console.log(value);
 
-                var UID = Object.keys(value)[0]; //Here we use a function that retrieves all the data keys (the ID of the data entry)
-
-                var output = value[UID]; //Then we use the ID to retrieve the data from the JSON-array
+                var UID = Object.keys(value)[0];
+                var output = value[UID];
                 console.log(output);
 
                 if(output.password == password) { //Then, if the password matches we proceed. The password can not be checked before we have fetched the data
@@ -213,11 +210,9 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
 
     });
 
-    /**
-     * Handles event when a web page wants to change light brightness on ESP32.
-     * Forwards power to ESP32
-     * @param power the power which is set to the light in bits
-     */
+    // Handles event when a web page wants to change light brightness on ESP32.
+    // Forwards power to ESP32
+    // @param power the power which is set to the light in bits
     socket.on('lightPower', function(power) {
         if(regUID != undefined && regUID != "" && regUID != 0) { //Check if the user is authenticated
             io.emit('changeLightPower', power); //This is the actual socket.io emit function to ESP
@@ -227,11 +222,9 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
         }
     });
 
-    /**
-     * Handles event when a web page wants to change water pump power on ESP32. 
-     * Forwards power to ESP32
-     * @param power the power which is set to the water pump in bits
-     */
+    // Handles event when a web page wants to change water pump power on ESP32.
+    // Forwards power to ESP32
+    // @param power the power which is set to the water pump in bits
     socket.on('waterPumpPower', function(power) {
         if(regUID != undefined && regUID != "" && regUID != 0) { //Check if the user is authenticated
             io.emit('changeWaterPumpPower', power);
@@ -241,11 +234,9 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
         }
     });
 
-    /**
-     * Handles event when a web page wants to change vent opening on ESP32.
-     * Forwards angle to ESP32
-     * @param angle the angle which the servo motor turns in degrees
-     */
+    // Handles event when a web page wants to change vent opening on ESP32.
+    // Forwards angle to ESP32
+    // @param angle the angle which the servo motor turns in degrees
     socket.on('ventAngle', function(angle) {
         if(regUID != undefined && regUID != "" && regUID != 0) { //Check if the user is authenticated
             io.emit('changeVentAngle', angle);
@@ -256,14 +247,12 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
         
     });
 
-    /**
-     * Handles event when web page requests sensor data from ESP32.
-     * Clears previous timers to avoid more than one request interval at once and 
-     * forwards the request to ESP32
-     * @param request the sensor that is requested. "all" if all sensors
-     * @param interval the time between each consecutive request
-     */
 
+     // Handles event when web page requests sensor data from ESP32.
+     // Clears previous timers to avoid more than one request interval at once and
+     // forwards the request to ESP32
+     // @param request the sensor that is requested. "all" if all sensors
+     // @param interval the time between each consecutive request
     socket.on('requestDataFromBoard', function(request, interval) { // Receives from webpage
         if(regUID != undefined && regUID != "" && regUID != 0) { //Check if the user is authenticated
             clearInterval(timer);
@@ -277,11 +266,8 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
         }
     });
 
-    /**
-     * Handles event when web page does not want data anymore. Stops data requests 
-     * by clearing timer
-     */
-
+    // Handles event when web page does not want data anymore. Stops data requests
+    // by clearing timer
     socket.on('stopDataFromBoard', function() { //This function stops all the timers set by a user so that data will no longer be sent to the webpage
         if(regUID != undefined && regUID != "" && regUID != 0) { //Check if the user is authenticated
             clearInterval(timer);
@@ -291,11 +277,9 @@ io.on('connection', function(socket) { //This is the server part of the "what ha
         }
     });
 
-    /**
-     * Handles a series of events when ESP32 sends its sensor data.
-     * Forwards the data to the web page
-     * @param data the data sent from the ESP32
-     */
+    // Handles a series of events when ESP32 sends its sensor data.
+    // Forwards the data to the web page
+    // @param data the data sent from the ESP32
     socket.on('waterLevel', function(data) {
         io.emit('pushWaterLevel', data);
         console.log('user ' + clientID + ' gained the data: ' + data);
